@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import Paths from '@src/common/constants/Paths';
+import aiRouter from './aiRouter';
 
 /******************************************************************************
                                 Setup
@@ -8,6 +9,7 @@ import Paths from '@src/common/constants/Paths';
 
 const apiRouter = Router();
 
+apiRouter.use(Paths.AI._, aiRouter)
 
 /******************************************************************************
                                 Export
