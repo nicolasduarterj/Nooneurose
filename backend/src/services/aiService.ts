@@ -19,22 +19,30 @@ export default class AIService {
      * @throws Error if the API threw an error
      */
     public static async sendMessage(msg: string): Promise<string> {
-        const completion = await openRouter.chat.completions.create({
-            model: AIService.model,
-            messages: [
-                {
-                    role: 'user',
-                    content: msg
-                }
-            ]
-        })
+        try {
+            const completion = await openRouter.chat.completions.create({
+                model: AIService.model,
+                messages: [
+                    {
+                        role: 'user',
+                        content: msg
+                    }
+                ]
+            })
 
-        const response = completion.choices[0].message.content
+            const response = completion.choices[0].message.content
 
-        if (!response) {
-            throw new AIServiceError('AI model did not return')
+            if (!response) {
+                throw new AIServiceError('AI model did not return')
+            }
+
+            return response
+        } catch (error) {
+            if (error instanceof AIServiceError)
+                throw error
+            else {
+                throw new AIServiceError('Unexpected AI service error', { cause: error })
+            }
         }
-
-        return response
     }
 }

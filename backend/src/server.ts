@@ -8,6 +8,7 @@ import { RouteError } from '@src/common/utils/route-errors';
 import BaseRouter from '@src/routes/apiRouter';
 
 import EnvVars, { NodeEnvs } from './common/constants/env';
+import AIServiceError from './common/types/AIServiceError';
 
 /******************************************************************************
                                 Setup
@@ -41,6 +42,9 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
   }
   if (err instanceof RouteError) {
     res.status(err.status).json({ error: err.message });
+  }
+  if (err instanceof AIServiceError) {
+    res.status(500).json({ error: 'Problem with our AI provider' })
   }
   return next(err);
 });
