@@ -8,7 +8,7 @@ export default class AIService {
 
     static {
         AIService.basePrompt = ''
-        AIService.model = 'google/gemma-4-26b-a4b-it:free'
+        AIService.model = EnvVars.OpenRouterModel
     }
 
     /**
@@ -16,10 +16,11 @@ export default class AIService {
      * @param msg message to be sent
      * @returns the AI response
      * @throws AIServiceError if the model response is null
+     * @throws Error if the API threw an error
      */
     public static async sendMessage(msg: string): Promise<string> {
         const completion = await openRouter.chat.completions.create({
-            model: EnvVars.OpenRouterModel,
+            model: AIService.model,
             messages: [
                 {
                     role: 'user',
