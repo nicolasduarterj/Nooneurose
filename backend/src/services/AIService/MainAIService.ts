@@ -2,13 +2,13 @@ import openRouter from "@src/common/constants/openRouter"
 import EnvVars from "@src/common/constants/env"
 import AIServiceError from "@src/common/types/AIServiceError"
 
-export default class AIService {
+export default class MainAIService {
     private static basePrompt: string
     private static model: string
 
     static {
-        AIService.basePrompt = ''
-        AIService.model = EnvVars.OpenRouterModel
+        MainAIService.basePrompt = ''
+        MainAIService.model = EnvVars.OpenRouterModel
     }
 
     /**
@@ -18,10 +18,10 @@ export default class AIService {
      * @throws AIServiceError if the model response is null
      * @throws Error if the API threw an error
      */
-    public static async sendMessage(msg: string): Promise<string> {
+    public static async sendMessage(msg: string, chatID: string): Promise<string> {
         try {
             const completion = await openRouter.chat.completions.create({
-                model: AIService.model,
+                model: MainAIService.model,
                 messages: [
                     {
                         role: 'user',
