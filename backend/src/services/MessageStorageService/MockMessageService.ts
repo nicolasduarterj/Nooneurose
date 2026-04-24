@@ -1,4 +1,4 @@
-import { Message, Response } from "@src/db/schema";
+import { Message, MessageAndResponse, Response } from "@src/db/schema";
 
 export default abstract class MockStorageService {
     /**
@@ -70,5 +70,24 @@ export default abstract class MockStorageService {
             timestamp: new Date(),
             parentId: 1
         }
+    }
+
+    //eslint-disable-next-line @typescript-eslint/require-await
+    public static async getMessagesAndResponsesByChat(chat_uuid: string): Promise<MessageAndResponse[]> {
+        return [{
+            messages: {
+                id: 1,
+                content: 'Mock response',
+                timestamp: new Date(),
+                isIncludedInPrompt: false,
+                chatUUID: chat_uuid
+            },
+            responses: {
+                id: 1,
+                content: 'Mock response',
+                timestamp: new Date(),
+                parentId: 1
+            }
+        }]
     }
 }

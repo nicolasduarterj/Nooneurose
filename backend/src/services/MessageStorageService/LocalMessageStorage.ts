@@ -1,5 +1,5 @@
 import DatabaseError from "@src/common/types/DatabaseError";
-import { Message, Response } from "@src/db/schema";
+import { Message, MessageAndResponse, Response } from "@src/db/schema";
 
 export default abstract class LocalMessageStorage {
     /** 
@@ -98,4 +98,21 @@ export default abstract class LocalMessageStorage {
         return res
     }
 
+    //eslint-disable-next-line @typescript-eslint/require-await
+    public static async getMessagesAndResponsesByChat(chat_uuid: string): Promise<MessageAndResponse[]> {
+
+        const result: MessageAndResponse[] = []
+
+        const messages = LocalMessageStorage.messageStore.get(chat_uuid) || []
+        const responses = LocalMessageStorage.responseStore.get(chat_uuid) || []
+
+        for (let i = 0; i < messages.length; i++) {
+            result.push({
+                messages: messages[i],
+                responses: responses.find(res => res.parentId === messages[i].id) ?? null
+            })
+        }
+
+        return result
+    }
 }
