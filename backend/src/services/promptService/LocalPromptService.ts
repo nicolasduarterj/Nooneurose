@@ -1,4 +1,4 @@
-import { Prompt, createPrompt } from '../../models/common/prompt';
+import { Prompt } from '@src/db/schema'
 import { getServices } from '../Services';
 
 export default abstract class LocalPromptService {
@@ -18,7 +18,12 @@ export default abstract class LocalPromptService {
      */
     //eslint-disable-next-line @typescript-eslint/require-await
     public static async registerPrompt(content: string, parent_id: number | null = null): Promise<Prompt> {  // prompt minúsculo
-        const newPrompt = createPrompt(LocalPromptService.nextId++, content, parent_id);
+        const newPrompt: Prompt = {
+            id: LocalPromptService.nextId++,
+            parentId: parent_id,
+            content,
+            timestamp: new Date()
+        }
         LocalPromptService.promptStore.push(newPrompt);
         return newPrompt;
   }

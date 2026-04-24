@@ -1,4 +1,4 @@
-import { Prompt } from '../../models/common/prompt';
+import { Prompt } from '@src/db/schema'
 
 export default abstract class MockPromptService {
     /**
@@ -11,9 +11,9 @@ export default abstract class MockPromptService {
     public static async registerPrompt(content: string, parent_id: number | null = null): Promise<Prompt> {
         return {
             id: MockPromptService.nextId++,
-            prompt: `MOCK: ${content}`,
-            parent_id,
-            created_at: new Date().toISOString(),
+            content: `MOCK: ${content}`,
+            parentId: parent_id,
+            timestamp: new Date(),
         };
     }
 
@@ -21,9 +21,9 @@ export default abstract class MockPromptService {
     public static async getLatestPrompt(): Promise<Prompt | null> {
         return {
             id: 999,
-            prompt: 'Mock latest prompt',
-            parent_id: null,
-            created_at: new Date().toISOString(),
+            content: 'Mock latest prompt',
+            parentId: null,
+            timestamp: new Date(),
         };
     }
 
@@ -31,9 +31,9 @@ export default abstract class MockPromptService {
     public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null> {
         return {
             id: MockPromptService.nextId++,
-            prompt: `Mock generated prompt from chat ${chat_uuid}`,
-            parent_id: 999,
-            created_at: new Date().toISOString(),
+            content: `Mock generated prompt from chat ${chat_uuid}`,
+            parentId: 999,
+            timestamp: new Date()
         };
     }
 

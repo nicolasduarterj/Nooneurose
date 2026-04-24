@@ -1,4 +1,5 @@
-import { Message, createMessage } from '@src/models/common/message';
+import DatabaseError from "@src/common/types/DatabaseError";
+import { Message, Response } from "@src/db/schema";
 
 export default abstract class LocalMessageStorage {
     /** 
@@ -8,6 +9,7 @@ export default abstract class LocalMessageStorage {
     */
 
     private static messageStore: Map<string, Message[]> = new Map();
+    private static responseStore: Map<string, Response[]> = new Map();
     private static nextId = 1;
 
     /**
@@ -18,7 +20,13 @@ export default abstract class LocalMessageStorage {
      */
     //eslint-disable-next-line @typescript-eslint/require-await
     public static async registerMessage(content: string, chat_uuid: string): Promise<Message> {
-        const message = createMessage(LocalMessageStorage.nextId++, content, chat_uuid);
+        const message: Message = {
+            id: LocalMessageStorage.nextId++,
+            content: content,
+            isIncludedInPrompt: false,
+            timestamp: new Date(),
+            chatUUID: chat_uuid
+        }
 
         const chatMessages = LocalMessageStorage.messageStore.get(chat_uuid) || [];
         chatMessages.push(message);
@@ -47,7 +55,7 @@ export default abstract class LocalMessageStorage {
         for (const messages of LocalMessageStorage.messageStore.values()) {
             const found = messages.find((m) => m.id === msg_id);
             if (found) {
-                found.included_in_prompt = true;
+                found.isIncludedInPrompt = true;
                 return found;
             }
         }
@@ -62,7 +70,32 @@ export default abstract class LocalMessageStorage {
     //eslint-disable-next-line @typescript-eslint/require-await
     public static async getUnusedMessages(chat_uuid: string): Promise<Message[]> {
         const chatMessages = LocalMessageStorage.messageStore.get(chat_uuid) || [];
-        return chatMessages.filter((m) => !m.included_in_prompt);
+        return chatMessages.filter((m) => !m.isIncludedInPrompt);
+    }
+
+    //eslint-disable-next-line @typescript-eslint/require-await
+    public static async registerResponse(content: string, msg_id: number): Promise<Response> {
+        const res: Response = {
+            id: LocalMessageStorage.nextId++,
+            content,
+            timestamp: new Date(),
+            parentId: msg_id
+        }
+
+        let chatUUID = ''
+        for (const chat of LocalMessageStorage.messageStore.values()) {
+            const msg = chat.find(msg => msg.id === msg_id)
+            if (msg) {
+                chatUUID = msg.chatUUID
+            }
+        }
+
+        if (!chatUUID)
+            throw new DatabaseError()
+
+        const responses = LocalMessageStorage.responseStore.get(chatUUID) || []
+        LocalMessageStorage.responseStore.set(chatUUID, responses.concat(res))
+        return res
     }
 
 }

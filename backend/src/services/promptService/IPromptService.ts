@@ -1,4 +1,4 @@
-import { Prompt } from '../../models/common/prompt';
+import { Prompt } from '@src/db/schema'
 
 export default interface IPromptService {
     registerPrompt(content: string, parent_id?: number | null): Promise<Prompt>;

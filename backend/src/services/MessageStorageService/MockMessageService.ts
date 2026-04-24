@@ -1,4 +1,4 @@
-import { Message } from '../../models/common/message';
+import { Message, Response } from "@src/db/schema";
 
 export default abstract class MockStorageService {
     /**
@@ -12,9 +12,9 @@ export default abstract class MockStorageService {
         return {
             id: MockStorageService.nextId++,
             content: `MOCK: ${content}`,
-            chat_uuid,
-            included_in_prompt: false,
-            created_at: new Date().toISOString(),
+            chatUUID: chat_uuid,
+            isIncludedInPrompt: false,
+            timestamp: new Date(),
         };
     }
 
@@ -24,16 +24,16 @@ export default abstract class MockStorageService {
             {
                 id: 1,
                 content: 'Mock message 1',
-                chat_uuid,
-                included_in_prompt: false,
-                created_at: new Date().toISOString(),
+                chatUUID: chat_uuid,
+                isIncludedInPrompt: false,
+                timestamp: new Date(),
             },
             {
                 id: 2,
                 content: 'Mock message 2',
-                chat_uuid,
-                included_in_prompt: false,
-                created_at: new Date().toISOString(),
+                chatUUID: chat_uuid,
+                isIncludedInPrompt: false,
+                timestamp: new Date(),
             },
         ];
     }
@@ -43,9 +43,9 @@ export default abstract class MockStorageService {
         return {
             id: msg_id,
             content: 'Mock message marked as included',
-            chat_uuid: 'mock-chat',
-            included_in_prompt: true,
-            created_at: new Date().toISOString(),
+            chatUUID: 'mock-chat',
+            isIncludedInPrompt: true,
+            timestamp: new Date(),
         };
     }
 
@@ -55,10 +55,20 @@ export default abstract class MockStorageService {
             {
                 id: 1,
                 content: 'Mock unused message',
-                chat_uuid,
-                included_in_prompt: false,
-                created_at: new Date().toISOString(),
+                chatUUID: chat_uuid,
+                isIncludedInPrompt: false,
+                timestamp: new Date(),
             },
         ];
+    }
+
+    //eslint-disable-next-line @typescript-eslint/require-await
+    public static async registerResponse(content: string, msg_id: number): Promise<Response> {
+        return {
+            id: 1,
+            content: 'Mock response',
+            timestamp: new Date(),
+            parentId: 1
+        }
     }
 }
