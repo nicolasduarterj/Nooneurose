@@ -20,8 +20,8 @@ export default function ChatMessage({ type, content }: ChatMessageProps) {
         )
         }
       </div>
-      <div className="flex w-full rounded-3xl border-secondary bg-secondary px-4 py-4 text-neutral drop-shadow-neutral-950">
-        <p className="text-base text-justify">{content}</p>
+      <div className="flex min-w-0 flex-1 rounded-3xl border-secondary bg-secondary px-4 py-4 text-neutral drop-shadow-neutral-950">
+        <p className="text-base text-justify whitespace-pre-wrap wrap-anywhere">{content}</p>
       </div>
     </div>
   );
