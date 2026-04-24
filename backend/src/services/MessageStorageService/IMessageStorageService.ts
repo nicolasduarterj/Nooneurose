@@ -1,4 +1,4 @@
-import { Message, Response } from "@src/db/schema";
+import { Message, MessageAndResponse, Response } from "@src/db/schema";
 
 export default interface IMessageStorageService {
     registerMessage(content: string, chat_uuid: string): Promise<Message>;
@@ -6,4 +6,5 @@ export default interface IMessageStorageService {
     markMessageAsIncluded(msg_id: number): Promise<Message | null>;
     getUnusedMessages(chat_uuid: string): Promise<Message[]>;
     registerResponse(content: string, msg_id: number): Promise<Response>
+    getMessagesAndResponsesByChat(chat_uuid: string): Promise<MessageAndResponse[]>
 }

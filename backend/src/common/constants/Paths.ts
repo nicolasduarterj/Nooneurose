@@ -6,6 +6,10 @@ const Paths = {
         _: '/ai',
         Send: '/send'
     },
+    Chat: {
+        _: '/chat',
+        ChatUUID: '/:chatUUID'
+    }
 } as const;
 
 export const JetPaths = jetPaths(Paths);

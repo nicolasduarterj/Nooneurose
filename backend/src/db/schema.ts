@@ -26,3 +26,8 @@ export const responsesTable = pgTable('responses', {
 export type Message = typeof messagesTable.$inferSelect
 export type Prompt = typeof promptsTable.$inferSelect
 export type Response = typeof responsesTable.$inferSelect
+
+export type MessageAndResponse = {
+    messages: Message,
+    responses: Response | null
+}

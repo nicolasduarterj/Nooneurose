@@ -1,4 +1,4 @@
-import { Message, messagesTable, Response, responsesTable } from "@src/db/schema";
+import { Message, MessageAndResponse, messagesTable, Response, responsesTable } from "@src/db/schema";
 import db from "@src/db/db";
 import { eq } from "drizzle-orm";
 import DatabaseError from "@src/common/types/DatabaseError";
@@ -46,5 +46,13 @@ export default abstract class DatabaseMessageStorageService {
 
         const res = await db.insert(responsesTable).values(resBase).returning()
         return res[0]
+    }
+
+    public static async getMessagesAndResponsesByChat(chatUUID: string): Promise<MessageAndResponse[]> {
+        const res = await db.select().from(messagesTable)
+            .leftJoin(responsesTable, eq(messagesTable.id, responsesTable.parentId))
+            .where(eq(messagesTable.chatUUID, chatUUID))
+
+        return res
     }
 }
