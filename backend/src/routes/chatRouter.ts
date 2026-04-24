@@ -19,7 +19,11 @@ chatRouter.get(Paths.Chat.ChatUUID, async function(req: Req, res: Res) {
     const services = getServices()
 
     const result = await services.MessageStorageService.getMessagesAndResponsesByChat(chatUUID)
-    res.json(result)
+    const filteredResult = result.map(msgAndResponse => ({ 
+        message: msgAndResponse.messages.content,
+        response: msgAndResponse.responses?.content ?? null
+    }))
+    res.json(filteredResult)
 })
 
 export default chatRouter

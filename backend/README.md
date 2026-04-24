@@ -39,5 +39,39 @@ Check for typescript errors.
 - If `npm run dev` gives you issues with bcrypt on MacOS you may need to run: `npm rebuild bcrypt --build-from-source`.
 
 ## Responsáveis pelo back-end (em ordem alfabética):
-- 
+- Lucas Batista
 - Nicolas Duarte
+
+# Rotas
+
+### /api/send
+Envia uma mensagem para a IA
+```
+POST:
+    Content-Type: application/json
+
+    Estrutura do body: {
+        message: string, // mensagem do usuário
+        chatUUID: string // UUID do chat
+    }
+
+    Estrutura da resposta (se 200): {
+        response: string // resposta da IA
+    }
+
+    Erros: 400 (parâmetros faltando), 500 (problema com o provedor de IA)
+```
+
+### /api/chat/\[chatUUID\]
+Lista todas as mensagens e respostas de um chat
+```
+GET:
+    Content-Type: application/json
+
+    Estrutura da resposta: [
+        {
+            message: string, // Mensagem do usuário
+            response: string | null // Resposta da IA
+        }
+    ]
+```
