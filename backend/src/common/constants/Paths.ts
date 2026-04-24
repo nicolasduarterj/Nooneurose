@@ -1,11 +1,11 @@
 import jetPaths from 'jet-paths';
 
 const Paths = {
-  _: '/api',
-  AI: {
-    _: '/ai',
-    Send: '/send'
-  }
+    _: '/api',
+    AI: {
+        _: '/ai',
+        Send: '/send'
+    },
 } as const;
 
 export const JetPaths = jetPaths(Paths);
