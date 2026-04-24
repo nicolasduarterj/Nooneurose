@@ -30,8 +30,8 @@ export default function ChatForm({ onSubmitMessage }: ChatFormProps) {
             return;
         }
 
-        await onSubmitMessage(message);
         cleanForm();
+        await onSubmitMessage(message);
     };
 
     const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
