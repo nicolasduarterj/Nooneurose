@@ -24,6 +24,6 @@
     "scripts",
     "eslint.config.ts",
     "vitest.config.mts"
-  ],
+, "src/services/promptService/mainPromptService"  ],
   "exclude": ["src/public/*"]
 }
