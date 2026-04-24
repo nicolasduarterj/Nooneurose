@@ -16,5 +16,13 @@ export const promptsTable = pgTable('prompts', {
     timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`)
 })
 
+export const responsesTable = pgTable('responses', {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    content: text('content').notNull(),
+    parentId: integer('parent_id').references(() => messagesTable.id).notNull(),
+    timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`)
+})
+
 export type Message = typeof messagesTable.$inferSelect
 export type Prompt = typeof promptsTable.$inferSelect
+export type Response = typeof responsesTable.$inferSelect

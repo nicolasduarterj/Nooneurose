@@ -26,6 +26,7 @@ aiRouter.post(Paths.AI.Send, async function(req: Req, res: Res) {
 
     const loggedMessage = await services.MessageStorageService.registerMessage(msg, chatUUID)
     const response = await services.AIService.sendMessage(msg, '')
+    await services.MessageStorageService.registerResponse(response, loggedMessage.id)
     res.send({ response: response })
 })
 

@@ -1,6 +1,7 @@
-import { Message, messagesTable } from "@src/db/schema";
+import { Message, messagesTable, Response, responsesTable } from "@src/db/schema";
 import db from "@src/db/db";
 import { eq } from "drizzle-orm";
+import DatabaseError from "@src/common/types/DatabaseError";
 
 export default abstract class DatabaseMessageStorageService {
     public static async registerMessage(content: string, chat_uuid: string): Promise<Message> {
@@ -29,5 +30,21 @@ export default abstract class DatabaseMessageStorageService {
     public static async getUnusedMessages(): Promise<Message[]> {
         const res = await db.select().from(messagesTable).where(eq(messagesTable.isIncludedInPrompt, false))
         return res
+    }
+
+    public static async registerResponse(content: string, msg_id: number): Promise<Response> {
+        const msgCandidates = await db.select().from(messagesTable).where(eq(messagesTable.id, msg_id))
+
+        if (msgCandidates.length === 0)
+            throw new DatabaseError('Error responding to non-existing message')
+
+        const msg = msgCandidates[0]
+        const resBase: typeof responsesTable.$inferInsert = {
+            content,
+            parentId: msg.id
+        }
+
+        const res = await db.insert(responsesTable).values(resBase).returning()
+        return res[0]
     }
 }
