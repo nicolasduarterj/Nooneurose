@@ -6,14 +6,14 @@ export const messagesTable = pgTable('messages', {
     content: text('content').notNull(),
     chatUUID: uuid('chat_uuid').notNull(),
     isIncludedInPrompt: boolean('is_included_in_prompt').notNull().default(false),
-    timestamp: timestamp('timestamp').notNull().default(sql`now()`)
+    timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`)
 })
 
 export const promptsTable = pgTable('prompts', {
     id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
     content: text('content').notNull(),
     parentId: integer('parent_id').references((): AnyPgColumn => promptsTable.id),
-    timestamp: timestamp('timestamp').notNull().default(sql`now()`)
+    timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`)
 })
 
 export type Message = typeof messagesTable.$inferSelect

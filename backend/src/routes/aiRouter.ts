@@ -15,10 +15,16 @@ aiRouter.post(Paths.AI.Send, async function(req: Req, res: Res) {
     }
 
     const msg = req.body['message']
-    if (msg === '') {
+    if (!msg) {
         throw new RouteError(400, 'Missing message')
     }
 
+    const chatUUID = req.body['chatUUID']
+    if (!chatUUID)
+        throw new RouteError(400, 'Missing chat UUID')
+
+
+    const loggedMessage = await services.MessageStorageService.registerMessage(msg, chatUUID)
     const response = await services.AIService.sendMessage(msg, '')
     res.send({ response: response })
 })

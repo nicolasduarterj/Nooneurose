@@ -8,6 +8,7 @@ import MockStorageService from "./MessageStorageService/MockMessageService";
 import IPromptService from "./promptService/IPromptService";
 import LocalPromptService from "./promptService/LocalPromptService";
 import MockPromptService from "./promptService/MockPromptService";
+import DatabaseMessageStorageService from "./MessageStorageService/DatabaseMessageStorageService";
 
 
 export interface Services {
@@ -21,7 +22,7 @@ export function getServices(): Services {
         case "development":
             return { 
                 AIService: MainAIService, 
-                MessageStorageService: LocalMessageStorage,
+                MessageStorageService: DatabaseMessageStorageService,
                 PromptService: LocalPromptService
             }
         case "test":
@@ -33,7 +34,7 @@ export function getServices(): Services {
         case "production":
             return {
                 AIService: MainAIService,
-                MessageStorageService: LocalMessageStorage,
+                MessageStorageService: DatabaseMessageStorageService,
                 PromptService: LocalPromptService
             }
     }
