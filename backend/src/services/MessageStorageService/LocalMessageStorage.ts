@@ -1,4 +1,4 @@
-import { Message, createMessage } from '@src/models/common/message';
+import { Message } from "@src/db/schema";
 
 export default abstract class LocalMessageStorage {
     /** 
@@ -18,7 +18,13 @@ export default abstract class LocalMessageStorage {
      */
     //eslint-disable-next-line @typescript-eslint/require-await
     public static async registerMessage(content: string, chat_uuid: string): Promise<Message> {
-        const message = createMessage(LocalMessageStorage.nextId++, content, chat_uuid);
+        const message: Message = {
+            id: LocalMessageStorage.nextId++,
+            content: content,
+            isIncludedInPrompt: false,
+            timestamp: new Date(),
+            chatUUID: chat_uuid
+        }
 
         const chatMessages = LocalMessageStorage.messageStore.get(chat_uuid) || [];
         chatMessages.push(message);
@@ -47,7 +53,7 @@ export default abstract class LocalMessageStorage {
         for (const messages of LocalMessageStorage.messageStore.values()) {
             const found = messages.find((m) => m.id === msg_id);
             if (found) {
-                found.included_in_prompt = true;
+                found.isIncludedInPrompt = true;
                 return found;
             }
         }
@@ -62,7 +68,7 @@ export default abstract class LocalMessageStorage {
     //eslint-disable-next-line @typescript-eslint/require-await
     public static async getUnusedMessages(chat_uuid: string): Promise<Message[]> {
         const chatMessages = LocalMessageStorage.messageStore.get(chat_uuid) || [];
-        return chatMessages.filter((m) => !m.included_in_prompt);
+        return chatMessages.filter((m) => !m.isIncludedInPrompt);
     }
 
 }

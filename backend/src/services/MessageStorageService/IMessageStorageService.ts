@@ -1,4 +1,4 @@
-import { Message } from '../../models/common/message';
+import { Message } from "@src/db/schema";
 
 export default interface IMessageStorageService {
     registerMessage(content: string, chat_uuid: string): Promise<Message>;

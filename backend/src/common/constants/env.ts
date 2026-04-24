@@ -21,6 +21,7 @@ const EnvVars = jetEnv({
   Port: num,
   OpenRouterAPIKey: str,
   OpenRouterModel: str,
+  DatabaseUrl: str,
 });
 
 /******************************************************************************
