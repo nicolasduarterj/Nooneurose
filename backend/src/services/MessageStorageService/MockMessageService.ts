@@ -1,4 +1,4 @@
-import { message } from '../../models/common/message';
+import { Message } from '../../models/common/message';
 
 export default abstract class MockStorageService {
     /**
@@ -8,7 +8,7 @@ export default abstract class MockStorageService {
     private static nextId = 1000; // IDs diferentes para distinguir dos reais
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerMessage(content: string, chat_uuid: string): Promise<message> {
+    public static async registerMessage(content: string, chat_uuid: string): Promise<Message> {
         return {
             id: MockStorageService.nextId++,
             content: `MOCK: ${content}`,
@@ -19,7 +19,7 @@ export default abstract class MockStorageService {
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getMessagesByChat(chat_uuid: string): Promise<message[]> {
+    public static async getMessagesByChat(chat_uuid: string): Promise<Message[]> {
         return [
             {
                 id: 1,
@@ -39,7 +39,7 @@ export default abstract class MockStorageService {
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async markMessageAsIncluded(msg_id: number): Promise<message | null> {
+    public static async markMessageAsIncluded(msg_id: number): Promise<Message | null> {
         return {
             id: msg_id,
             content: 'Mock message marked as included',
@@ -50,7 +50,7 @@ export default abstract class MockStorageService {
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getUnusedMessages(chat_uuid: string): Promise<message[]> {
+    public static async getUnusedMessages(chat_uuid: string): Promise<Message[]> {
         return [
             {
                 id: 1,

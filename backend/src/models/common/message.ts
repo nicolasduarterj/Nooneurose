@@ -1,5 +1,5 @@
 /** Represents a chat message entity. Stored in-memory during MVP phase; will be migrated to Drizzle ORM later. */
-export interface message {
+export interface Message {
     id: number;
     content: string;
     chat_uuid: string;
@@ -12,7 +12,7 @@ export function createMessage(
     id: number,
     content: string,
     chat_uuid: string
-): message {
+): Message {
     return {
         id,
         content,

@@ -1,5 +1,5 @@
 /** Represents a prompt generated from chat messages. Stored in-memory during MVP phase; will be migrated to Drizzle ORM later.*/
-export interface prompt {
+export interface Prompt {
   id: number;
   prompt: string;
   parent_id: number | null;
@@ -13,7 +13,7 @@ export function createPrompt(
   id: number,
   prompt: string,
   parent_id: number | null = null
-): prompt {
+): Prompt {
   return {
     id,
     prompt,

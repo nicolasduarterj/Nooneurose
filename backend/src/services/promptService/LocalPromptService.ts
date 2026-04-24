@@ -1,4 +1,4 @@
-import { prompt, createPrompt } from '../../models/common/prompt';
+import { Prompt, createPrompt } from '../../models/common/prompt';
 import { getServices } from '../Services';
 
 export default abstract class LocalPromptService {
@@ -7,7 +7,7 @@ export default abstract class LocalPromptService {
      * In-memory prompt storage.
      * This mimics a relational DB table and will be replaced by Drizzle ORM queries later.
      */
-    private static promptStore: prompt[] = [];  // prompt minúsculo
+    private static promptStore: Prompt[] = [];  // prompt minúsculo
     private static nextId = 1;
 
     /**
@@ -17,7 +17,7 @@ export default abstract class LocalPromptService {
      * @returns The newly created prompt object.
      */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerPrompt(content: string, parent_id: number | null = null): Promise<prompt> {  // prompt minúsculo
+    public static async registerPrompt(content: string, parent_id: number | null = null): Promise<Prompt> {  // prompt minúsculo
         const newPrompt = createPrompt(LocalPromptService.nextId++, content, parent_id);
         LocalPromptService.promptStore.push(newPrompt);
         return newPrompt;
@@ -28,7 +28,7 @@ export default abstract class LocalPromptService {
      * @returns The latest prompt or null if no prompts exist.
      */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getLatestPrompt(): Promise<prompt | null> {  // prompt minúsculo
+    public static async getLatestPrompt(): Promise<Prompt | null> {  // prompt minúsculo
         if (LocalPromptService.promptStore.length === 0) return null;
         return LocalPromptService.promptStore[LocalPromptService.promptStore.length - 1];
   }
@@ -39,7 +39,7 @@ export default abstract class LocalPromptService {
      * @param chat_uuid - The chat session identifier.
      * @returns The generated prompt, or null if no unused messages exist.
      */
-    public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<prompt | null> {  // prompt minúsculo
+    public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null> {  // prompt minúsculo
         const services = getServices()
         const unusedMessages = await services.MessageStorageService.getUnusedMessages(chat_uuid);
 
