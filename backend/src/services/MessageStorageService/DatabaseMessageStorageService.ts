@@ -1,6 +1,6 @@
 import { Message, MessageAndResponse, messagesTable, Response, responsesTable } from "@src/db/schema";
 import db from "@src/db/db";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import DatabaseError from "@src/common/types/DatabaseError";
 
 export default abstract class DatabaseMessageStorageService {
@@ -27,8 +27,13 @@ export default abstract class DatabaseMessageStorageService {
         return res[0]
     }
 
-    public static async getUnusedMessages(): Promise<Message[]> {
-        const res = await db.select().from(messagesTable).where(eq(messagesTable.isIncludedInPrompt, false))
+    public static async getUnusedMessages(chat_uuid: string): Promise<Message[]> {
+        const res = await db.select().from(messagesTable)
+            .where(
+                and(
+                    eq(messagesTable.isIncludedInPrompt, false),
+                    eq(messagesTable.chatUUID, chat_uuid)
+                ))
         return res
     }
 

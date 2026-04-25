@@ -45,4 +45,32 @@ export default class MainAIService {
             }
         }
     }
+
+    public static async sendMergeMessage(msg: string): Promise<string> {
+        try {
+            const completion = await openRouter.chat.completions.create({
+                model: MainAIService.model,
+                messages: [
+                    {
+                        role: 'system',
+                        content: msg
+                    }
+                ]
+            })
+
+            const response = completion.choices[0].message.content
+
+            if (!response) {
+                throw new AIServiceError('AI model did not return')
+            }
+
+            return response
+        } catch (error) {
+            if (error instanceof AIServiceError)
+                throw error
+            else {
+                throw new AIServiceError('Unexpected AI service error', { cause: error })
+            }
+        }
+    }
 }

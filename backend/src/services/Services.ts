@@ -3,11 +3,10 @@ import IAIService from "./AIService/IAIService";
 import MainAIService from "./AIService/MainAIService";
 import MockAIService from "./AIService/MockAIService";
 import IMessageStorageService from "./MessageStorageService/IMessageStorageService";
-import LocalMessageStorage from "./MessageStorageService/LocalMessageStorage";
 import MockStorageService from "./MessageStorageService/MockMessageService";
-import IPromptService from "./promptService/IPromptService";
-import LocalPromptService from "./promptService/LocalPromptService";
-import MockPromptService from "./promptService/MockPromptService";
+import IPromptService from "./PromptService/IPromptService";
+import LocalPromptService from "./PromptService/LocalPromptService";
+import MockPromptService from "./PromptService/MockPromptService";
 import DatabaseMessageStorageService from "./MessageStorageService/DatabaseMessageStorageService";
 
 
