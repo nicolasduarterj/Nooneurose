@@ -18,7 +18,7 @@ export default abstract class MockPromptService {
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getLatestPrompt(): Promise<Prompt | null> {
+    public static async getLatestPrompt(): Promise<Prompt> {
         return {
             id: 999,
             content: 'Mock latest prompt',
