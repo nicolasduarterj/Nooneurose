@@ -65,7 +65,7 @@ export default function ChatForm({ onSubmitMessage }: ChatFormProps) {
                         className="w-full text-neutral outline-none focus:outline-none focus:ring-0 resize-none leading-5 overflow-hidden" />
                 </div>
                 <div>
-                    <button type="submit" className="w-8 h-8 flex items-center justify-center bg-linear-to-b from-primary to-primary/30 rounded-lg p-2">
+                    <button type="submit" className="w-8 h-8 flex items-center justify-center bg-linear-to-b from-primary to-primary/30 rounded-lg p-2 cursor-pointer">
                         <ArrowUp className="text-secondary" />
                     </button>
                 </div>
