@@ -33,8 +33,15 @@ export default abstract class LocalPromptService {
      * @returns The latest prompt or null if no prompts exist.
      */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getLatestPrompt(): Promise<Prompt | null> {  // prompt minúsculo
-        if (LocalPromptService.promptStore.length === 0) return null;
+    public static async getLatestPrompt(): Promise<Prompt> {  // prompt minúsculo
+        if (LocalPromptService.promptStore.length === 0)  {
+            return {
+                id: LocalPromptService.nextId++,
+                parentId: null,
+                content: 'Mock prompt',
+                timestamp: new Date()
+            }
+        }
         return LocalPromptService.promptStore[LocalPromptService.promptStore.length - 1];
   }
 
