@@ -12,10 +12,12 @@ export default abstract class MainPromptService {
 
     private static mergePrompt = ['A seguir estará seu prompt de sistema atual e um conjunto de mensagens de usuários. ' +
         'Você deve mesclar a personalidade descrita no seu prompt de sistema e a personalidade demandada pelos usuários, ' +
-        'produzindo um novo prompt de sistema que faça você agir de acordo com as expectativas do usuário. Responda apenas ' +
-        'da seguinte maneira:\n\n' +
+        'produzindo um novo prompt de sistema que faça você agir de acordo com as expectativas do usuário. ' +
+        'Misture a sua personalidade atual com a requisitada pelo usuário, mesclando as duas e criando algo novo. ' +
+        'Se a mensagem não contiver nenhuma instrução de como agir, pode ignorá-la.\n' +
+        'Responda apenas da seguinte maneira:\n' +
         'PROMPT DE SISTEMA:<RESPOSTA>\n\n'+
-        'Segue o seu prompt de sistema atual:\n\n',
+        'Segue o seu prompt de sistema atual:\n',
         '\n\nSegue abaixo as mensagens do usuário:\n\n',
     ]
 
@@ -49,7 +51,7 @@ export default abstract class MainPromptService {
         if (messages.length === 0)
             return null
 
-        const messagesText = messages.map(msg => msg.content).join('<END OF MESSAGE>\n\n')
+        const messagesText = messages.map(msg => msg.content).join('<FIM DA MENSAGEM>\n\n')
         const currentPrompt = await MainPromptService.getLatestPrompt()
 
         const mergePrompt = MainPromptService.mergePrompt[0] 

@@ -25,8 +25,10 @@ aiRouter.post(Paths.AI.Send, async function(req: Req, res: Res) {
 
 
     const latestPrompt = await services.PromptService.getLatestPrompt()
+    const history = await services.MessageStorageService.getMessagesAndResponsesByChat(chatUUID)
     const loggedMessage = await services.MessageStorageService.registerMessage(msg, chatUUID)
-    const response = await services.AIService.sendMessage(latestPrompt.content, msg)
+    const response = await services.AIService.sendMessage(msg, latestPrompt.content, history)
+
     await services.MessageStorageService.registerResponse(response, loggedMessage.id)
     res.send({ response: response })
     await services.PromptService.generatePromptFromUnusedMessages(chatUUID)

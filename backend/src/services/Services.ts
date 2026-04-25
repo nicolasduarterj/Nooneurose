@@ -9,6 +9,7 @@ import LocalPromptService from "./PromptService/LocalPromptService";
 import MockPromptService from "./PromptService/MockPromptService";
 import DatabaseMessageStorageService from "./MessageStorageService/DatabaseMessageStorageService";
 import MainPromptService from "./PromptService/MainPromptService";
+import LocalMessageStorage from "./MessageStorageService/LocalMessageStorage";
 
 
 export interface Services {
@@ -21,9 +22,9 @@ export function getServices(): Services {
     switch(EnvVars.NodeEnv) {
         case "development":
             return { 
-                AIService: MainAIService, 
-                MessageStorageService: DatabaseMessageStorageService,
-                PromptService: MainPromptService
+                AIService: MockAIService, 
+                MessageStorageService: LocalMessageStorage,
+                PromptService: LocalPromptService
             }
         case "test":
             return { 
