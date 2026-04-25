@@ -44,7 +44,7 @@ export default abstract class MainPromptService {
         return res[0]
     }
 
-    public static async generatePromptFromUnusedMessage(chat_uuid: string): Promise<Prompt | null> {
+    public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null> {
         const messages = await DatabaseMessageStorageService.getUnusedMessages(chat_uuid)
         if (messages.length === 0)
             return null
@@ -57,10 +57,10 @@ export default abstract class MainPromptService {
             + MainPromptService.mergePrompt[1]
             + messagesText
 
-        const newPromptext = await MainAIService.sendMergeMessage(mergePrompt)
+        const newPromptext = await MainAIService.sendMessage('', mergePrompt)
         const newPromptInsert: typeof promptsTable.$inferInsert = {
             content: newPromptext,
-            parentId: currentPrompt.id,
+            parentId: currentPrompt.id === 0 ? null : currentPrompt.id,
         }
 
         const newPrompt = await db.insert(promptsTable).values(newPromptInsert).returning()

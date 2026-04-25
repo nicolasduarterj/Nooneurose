@@ -1,5 +1,4 @@
 
 export default interface IAIService {
-    sendMessage(msg: string, chatID: string): Promise<string>
-    sendMergeMessage(msg: string): Promise<string>
+    sendMessage(msg: string, systemPrompt: string): Promise<string>
 }

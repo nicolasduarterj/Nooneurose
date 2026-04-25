@@ -24,10 +24,12 @@ aiRouter.post(Paths.AI.Send, async function(req: Req, res: Res) {
         throw new RouteError(400, 'Missing chat UUID')
 
 
+    const latestPrompt = await services.PromptService.getLatestPrompt()
     const loggedMessage = await services.MessageStorageService.registerMessage(msg, chatUUID)
-    const response = await services.AIService.sendMessage(msg, '')
+    const response = await services.AIService.sendMessage(latestPrompt.content, msg)
     await services.MessageStorageService.registerResponse(response, loggedMessage.id)
     res.send({ response: response })
+    await services.PromptService.generatePromptFromUnusedMessages(chatUUID)
 })
 
 export default aiRouter
