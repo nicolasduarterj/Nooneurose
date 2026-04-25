@@ -44,7 +44,7 @@ Check for typescript errors.
 
 # Rotas
 
-### /api/send
+### /api/ai/send
 Envia uma mensagem para a IA
 ```
 POST:

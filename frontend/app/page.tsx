@@ -25,7 +25,7 @@ export default function Home() {
     if (phase !== 'idle') return;
     setPhase('falling');
     setTimeout(() => setPhase('leaving'), 800);
-    setTimeout(() => router.push('/chat/teste'), 1250); // ← AJUSTAR PARA CHAT DE PROMPT
+    setTimeout(() => router.push('chat'), 1250);
   };
  
   const isVisible   = phase !== 'black';
@@ -49,7 +49,7 @@ export default function Home() {
         className={`flex flex-col items-center gap-10 ${isVisible ? 'page-reveal' : 'opacity-0'}`}
         style={{marginTop: '-12vh'}}
       >
-        <div className="flex flex-col items-center gap-2 ${isFalling ? 'title-fadeout' : ''">
+        <div className={`flex flex-col items-center gap-2 ${isFalling ? 'title-fadeout' : ''}`}>
           <span
             className="text-xs tracking-[0.35em] uppercase text-white/50"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
