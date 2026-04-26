@@ -4,6 +4,7 @@ import { useEffect, useOptimistic, useState } from "react";
 import ChatForm from "@/components/ChatForm";
 import ChatMessageList from "@/components/ChatMessageList";
 import { Message } from "../types/message";
+import { v4 as uuidv4 } from "uuid";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -25,7 +26,7 @@ export default function Chat() {
             const stored = localStorage.getItem("chatUUID");
  
             if (!stored) {
-                const newUUID = crypto.randomUUID();
+                const newUUID = uuidv4();
                 localStorage.setItem("chatUUID", newUUID);
                 setChatUUID(newUUID);
                 return;
