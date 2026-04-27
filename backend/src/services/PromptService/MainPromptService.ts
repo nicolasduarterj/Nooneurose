@@ -3,6 +3,7 @@ import { Prompt, promptsTable } from "@src/db/schema"
 import { desc } from "drizzle-orm"
 import DatabaseMessageStorageService from "../MessageStorageService/DatabaseMessageStorageService"
 import MainAIService from "../AIService/MainAIService"
+import { ThrowsPromptServiceError } from "@src/common/types/PromptServiceError"
 
 export default abstract class MainPromptService {
     private static baseSystemPrompt = 'PROMPT DE SISTEMA:' +
@@ -21,6 +22,7 @@ export default abstract class MainPromptService {
         '\n\nSegue abaixo as mensagens do usuário:\n\n',
     ]
 
+    @ThrowsPromptServiceError
     public static async registerPrompt(content: string, parent_id: number | null): Promise<Prompt> {
         const newPrompt: typeof promptsTable.$inferInsert = {
             content,
@@ -33,6 +35,7 @@ export default abstract class MainPromptService {
         return prompt
     }
 
+    @ThrowsPromptServiceError
     public static async getLatestPrompt(): Promise<Prompt> {
         const res = await db.select().from(promptsTable).orderBy(desc(promptsTable.timestamp)).limit(1)
         if (res.length === 0)
@@ -46,6 +49,7 @@ export default abstract class MainPromptService {
         return res[0]
     }
 
+    @ThrowsPromptServiceError
     public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null> {
         const messages = await DatabaseMessageStorageService.getUnusedMessages(chat_uuid)
         if (messages.length === 0)

@@ -1,9 +1,9 @@
-export default class AIServiceError extends Error {}
+export default class PromptServiceError extends Error {}
 
 /**
- * Wraps all errors thrown in a function in an AIServiceError.
+ * Wraps all errors thrown in a function in a PromptServiceError
  */
-export function ThrowsAIServiceError<This, Args extends unknown[], Return>(
+export function ThrowsPromptServiceError<This, Args extends unknown[], Return>(
   target: (this: This, ...args: Args) => Return,
   _context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
 ) {
@@ -12,7 +12,7 @@ export function ThrowsAIServiceError<This, Args extends unknown[], Return>(
       const result = target.apply(this, args);
       if (result instanceof Promise) {
         return result.catch((error: unknown) => {
-          throw new AIServiceError(
+          throw new PromptServiceError(
             error instanceof Error ? error.message : String(error),
             { cause: error }
           );
@@ -20,7 +20,7 @@ export function ThrowsAIServiceError<This, Args extends unknown[], Return>(
       }
       return result;
     } catch (error: unknown) {
-      throw new AIServiceError(
+      throw new PromptServiceError(
         error instanceof Error ? error.message : String(error),
         { cause: error }
       );
