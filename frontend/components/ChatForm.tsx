@@ -52,9 +52,9 @@ export default function ChatForm({ onSubmitMessage }: ChatFormProps) {
     }
 
     return (
-        <div className="w-full min-h-12 bg-secondary rounded-2xl flex items-center px-4 py-2">
-            <Form ref={formRef} action={handleSubmit} className="flex flex-row items-center gap-3 w-full">
-                <div className="flex-1 px-3 flex items-center">
+        <div className="flex w-full min-h-12 items-center rounded-2xl bg-secondary px-3 py-1.5 sm:px-4 sm:py-2">
+            <Form ref={formRef} action={handleSubmit} className="flex w-full flex-row items-center gap-2 sm:gap-3">
+                <div className="flex flex-1 items-center px-1.5 sm:px-3">
                     <textarea
                         ref={textareaRef}
                         name="message"
@@ -62,11 +62,11 @@ export default function ChatForm({ onSubmitMessage }: ChatFormProps) {
                         rows={1}
                         onChange={handleTextareaInput}
                         onKeyDown={handleKeyDown}
-                        className="w-full text-neutral outline-none focus:outline-none focus:ring-0 resize-none leading-5 overflow-hidden" />
+                        className="w-full resize-none overflow-hidden text-sm leading-5 text-neutral outline-none focus:outline-none focus:ring-0 sm:text-base" />
                 </div>
                 <div>
-                    <button type="submit" className="w-8 h-8 flex items-center justify-center bg-linear-to-b from-primary to-primary/30 rounded-lg p-2 cursor-pointer">
-                        <ArrowUp className="text-secondary" />
+                    <button type="submit" className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg bg-linear-to-b from-primary to-primary/30 p-2 sm:h-8 sm:w-8">
+                        <ArrowUp className="h-4 w-4 text-secondary" />
                     </button>
                 </div>
             </Form>

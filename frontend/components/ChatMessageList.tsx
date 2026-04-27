@@ -14,7 +14,7 @@ export default function ChatMessageList({ messages }: ChatMessageListProps) {
     }, [messages]);
 
     return (
-        <div className="flex h-full flex-col-reverse gap-2 overflow-y-auto overscroll-none pr-1">
+        <div className="custom-scrollbar flex h-full flex-col-reverse gap-1.5 overflow-y-auto overscroll-none pr-0.5 sm:gap-2 sm:pr-1">
             {sortedMessages.map((message) => (
                 <ChatMessage key={message.id} message={message} />
             ))}
