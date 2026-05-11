@@ -22,6 +22,7 @@ const EnvVars = jetEnv({
   OpenRouterAPIKey: str,
   OpenRouterModel: str,
   DatabaseUrl: str,
+  JwtSecret: str
 });
 
 /******************************************************************************

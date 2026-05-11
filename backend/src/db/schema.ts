@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { AnyPgColumn, boolean, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { AnyPgColumn, boolean, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
 export const messagesTable = pgTable('messages', {
     id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
@@ -21,6 +21,13 @@ export const responsesTable = pgTable('responses', {
     content: text('content').notNull(),
     parentId: integer('parent_id').references(() => messagesTable.id).notNull(),
     timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`)
+})
+
+export const usersTable = pgTable('users', {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    name: varchar('name').notNull(),
+    email: varchar('email').notNull().unique(),
+    password: varchar('password').notNull()
 })
 
 export type Message = typeof messagesTable.$inferSelect
