@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 
 type Phase =
   | 'black'    // tela preta inicial
   | 'fadein'   // conteúdo surge
   | 'idle'     // esperando interação
-  | 'falling'  // cérebro caindo
   | 'leaving'; // navegando
  
 export default function Home() {
@@ -21,15 +19,19 @@ export default function Home() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
  
-  const handleBrainClick = () => {
+  const handleLoginClick = () => {
     if (phase !== 'idle') return;
-    setPhase('falling');
     setTimeout(() => setPhase('leaving'), 800);
     setTimeout(() => router.push('chat'), 1250);
   };
+
+  const handleRegisterClick = () => {
+    if (phase !== 'idle') return;
+    setTimeout(() => setPhase('leaving'), 800);
+    setTimeout(() => router.push('cadastro'), 1250);
+  }
  
   const isVisible   = phase !== 'black';
-  const isFalling   = phase === 'falling' || phase === 'leaving';
   const isLeaving   = phase === 'leaving';
  
 
@@ -49,7 +51,7 @@ export default function Home() {
         className={`flex flex-col items-center gap-10 ${isVisible ? 'page-reveal' : 'opacity-0'}`}
         style={{marginTop: '-12vh'}}
       >
-        <div className={`flex flex-col items-center gap-2 ${isFalling ? 'title-fadeout' : ''}`}>
+        <div className={`flex flex-col items-center gap-2`}>
           <span
             className="text-xs tracking-[0.35em] uppercase text-white/50"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -65,42 +67,52 @@ export default function Home() {
             <span className="text-white">NEUROSE</span>
           </h1>
         </div>
- 
-        {/* Cérebro & Texto */}
-        <div
-          className={`
-            flex flex-col items-center gap-3 select-none
-            ${isFalling ? 'brain-falling' : ''}
-            ${phase === 'idle' ? 'brain-idle' : ''}
-          `}
-          onClick={handleBrainClick}
-          style={{ willChange: 'transform, opacity' }}
-        >
-          <div
-            className="rounded-2xl p-5 flex items-center justify-center"
-            style={{
-              background: 'rgba(255, 0, 122, 0.08)',
-              border: '1px solid rgba(255, 0, 122, 0.18)',
-              width: 88,
-              height: 88,
-            }}
-          >
-            <Image
-              src="/brain.svg"  
-              alt="Cérebro"
-              width={52}
-              height={52}
-              priority
-              draggable={false}
-            />
-          </div>
+        <div className="flex flex-col items-center gap-2">       
+          <input className="rounded-2xl p-5 flex items-center justify-center" 
+                 style={{
+                         background: 'rgba(255, 0, 122, 0.08)',
+                         border: '1px solid rgba(255, 0, 122, 0.18)',
+                         width: 200,
+                         height: 50,
+                 }} 
+                 type="text" 
+                 name="username" 
+                 placeholder="Nome de usuário"/>
 
-          <span
-            className={`text-xs text-white/40 tracking-wide transition-opacity duration-300 ${isFalling ? 'opacity-0' : 'opacity-100'}`}
-            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-          >
-            Clique para iniciar
-          </span>
+          <input className="rounded-2xl p-5 flex items-center justify-center"
+                 style={{
+                         background: 'rgba(255, 0, 122, 0.08)',
+                         border: '1px solid rgba(255, 0, 122, 0.18)',
+                         width: 200,
+                         height: 50,
+                 }} 
+                 type="password" 
+                 name="password" 
+                 placeholder="Senha" />
+
+          <div className={"flex flex-col items-center gap-10 w-full mt-2"}>
+            <button className={"rounded-2xl p-5 flex items-center justify-center cursor-pointer"} 
+              style={{
+                      backgroundColor: '#ca0062d8',
+                      border: '1px solid rgba(255, 0, 122, 0.18)',
+                      width: 200,
+                      height: 50,
+                    }} 
+              onClick={handleLoginClick}>
+              Entrar
+            </button>
+            <button className={"rounded-2xl p-5 flex items-center justify-center cursor-pointer"} 
+              style={{
+                      backgroundColor: '#ffffffd7',
+                      border: '2px solid #ca0062d8',
+                      width: 200,
+                      height: 50,
+                      color: '#dd006b',
+                    }}
+              onClick={handleRegisterClick}>
+              Criar nova conta
+            </button>
+          </div>
         </div>
       </div>
     </main>
