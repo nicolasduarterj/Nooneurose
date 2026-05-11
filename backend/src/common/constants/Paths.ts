@@ -9,6 +9,10 @@ const Paths = {
     Chat: {
         _: '/chat',
         ChatUUID: '/:chatUUID'
+    },
+    User: {
+        _: '/user',
+        Login: '/login'
     }
 } as const;
 
