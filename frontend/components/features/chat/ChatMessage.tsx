@@ -1,4 +1,4 @@
-import { Message } from "@/app/types/message";
+import { Message } from "@/types/message";
 import { BotMessageSquare, CircleUser } from "lucide-react";
 
 type ChatMessageProps = {

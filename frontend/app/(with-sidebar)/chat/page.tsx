@@ -3,7 +3,7 @@
 import { useEffect, useOptimistic, useState } from "react";
 import ChatForm from "@/components/features/chat/ChatForm";
 import ChatMessageList from "@/components/features/chat/ChatMessageList";
-import { Message } from "../../types/message";
+import { Message } from "@/types/message";
 import { v4 as uuidv4 } from "uuid";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
