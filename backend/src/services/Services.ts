@@ -14,6 +14,8 @@ import IUserService from "./UserService/UserService";
 import MainUserService from "./UserService/MainUserService";
 import MockUserService from "./UserService/MockUserService";
 import LocalUserService from "./UserService/LocalUserService";
+import ICharacterService from "./CharacterService/ICharacterService";
+import MainCharacterService from "./CharacterService/MainCharacterService";
 
 
 export interface Services {
@@ -21,6 +23,7 @@ export interface Services {
     MessageStorageService: IMessageStorageService,
     PromptService: IPromptService
     UserService: IUserService
+    CharacterService: ICharacterService
 }
 
 export function getServices(): Services {
@@ -30,21 +33,24 @@ export function getServices(): Services {
                 AIService: MockAIService, 
                 MessageStorageService: LocalMessageStorage,
                 PromptService: LocalPromptService,
-                UserService: LocalUserService
+                UserService: LocalUserService,
+                CharacterService: MainCharacterService
             }
         case "test":
             return { 
                 AIService: MockAIService,
                 MessageStorageService: MockStorageService,
                 PromptService: MockPromptService,
-                UserService: MockUserService
+                UserService: MockUserService,
+                CharacterService: MainCharacterService
             }
         case "production":
             return {
                 AIService: MainAIService,
                 MessageStorageService: DatabaseMessageStorageService,
                 PromptService: MainPromptService,
-                UserService: MainUserService
+                UserService: MainUserService,
+                CharacterService: MainCharacterService
             }
     }
 }
