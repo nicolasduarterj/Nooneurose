@@ -1,10 +1,10 @@
 import { sql } from "drizzle-orm";
-import { AnyPgColumn, boolean, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { AnyPgColumn, boolean, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 
 export const messagesTable = pgTable('messages', {
     id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
     content: text('content').notNull(),
-    chatUUID: uuid('chat_uuid').notNull(),
+    chatId: integer('chat').references(() => chatsTable.id).notNull(),
     isIncludedInPrompt: boolean('is_included_in_prompt').notNull().default(false),
     timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`)
 })
@@ -30,9 +30,25 @@ export const usersTable = pgTable('users', {
     password: varchar('password').notNull()
 })
 
-export type Message = typeof messagesTable.$inferSelect
+export const charactersTable = pgTable('characters', {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    name: varchar('name').notNull(),
+    description: varchar('description').notNull(),
+    isGloballyChangeable: boolean('is_globally_changeable').notNull(),
+    isPrivatelyChangeable: boolean('is_privately_changeable').notNull(),
+    ownerId: integer('owner').references(() => usersTable.id).notNull(),
+    imageURL: varchar('image_url')
+})
+
+export const chatsTable = pgTable('chats', {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    ownerId: integer('owner').references(() => usersTable.id).notNull(),
+    characterId: integer('character').references(() => charactersTable.id).notNull()
+})
+
 export type Prompt = typeof promptsTable.$inferSelect
 export type Response = typeof responsesTable.$inferSelect
+export type Message = typeof messagesTable.$inferInsert
 
 export type MessageAndResponse = {
     messages: Message,
