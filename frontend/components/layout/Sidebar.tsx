@@ -1,4 +1,4 @@
-import { CircleUser, House, Info, ListIndentDecrease, Users, UserSearch } from "lucide-react";
+import { CircleUser, House, ListIndentDecrease, UserSearch } from "lucide-react";
 
 export default function Sidebar() {
     return (
@@ -37,22 +37,6 @@ export default function Sidebar() {
                         </div>
                         <div>
                             <p>PERSONAGENS</p>
-                        </div>
-                    </li>
-                    <li className="flex flex-row items-center gap-2 cursor-pointer hover:bg-primary/10 rounded-md p-2">
-                        <div>
-                            <Users />
-                        </div>
-                        <div>
-                            <p>USUÁRIOS</p>
-                        </div>
-                    </li>
-                    <li className="flex flex-row items-center gap-2 cursor-pointer hover:bg-primary/10 rounded-md p-2">
-                        <div>
-                            <Info />
-                        </div>
-                        <div>
-                            <p>SOBRE NÓS</p>
                         </div>
                     </li>
                 </ul>
