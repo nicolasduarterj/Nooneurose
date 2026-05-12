@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useOptimistic, useState } from "react";
-import ChatForm from "@/components/ChatForm";
-import ChatMessageList from "@/components/ChatMessageList";
-import { Message } from "../types/message";
+import ChatForm from "@/components/features/chat/ChatForm";
+import ChatMessageList from "@/components/features/chat/ChatMessageList";
+import { Message } from "../../types/message";
 import { v4 as uuidv4 } from "uuid";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -118,13 +118,13 @@ export default function Chat() {
     };
 
     return (
-        <main className="relative h-screen w-screen overflow-hidden custom-scrollbar">
+        <main className="relative overflow-hidden custom-scrollbar">
             <div className="chat-mesh-gradient" aria-hidden="true" />
-            <div className="relative z-10 mx-auto h-screen w-full px-2 pt-1 pb-4 md:w-[70vw] md:max-w-5xl md:px-1.5 md:pt-0.5 md:pb-7.5 flex flex-col overflow-hidden">
+            <div className="relative z-10 mx-auto h-screen w-full px-2 pt-1 pb-15 md:w-[70vw] md:max-w-5xl md:px-1.5 md:pt-0.5 md:pb-7.5 flex flex-col overflow-hidden">
                 <div className="min-h-0 flex-1">
                     <ChatMessageList messages={optimisticMessages} />
                 </div>
-                <div className="shrink-0 pt-1.5 md:pt-2">
+                <div className="shrink-0 pt-1.5 pb-2.5 md:pt-2 md:pb-3">
                     <ChatForm onSubmitMessage={handleSendMessage} />
                 </div>
             </div>

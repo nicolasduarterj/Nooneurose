@@ -52,7 +52,7 @@ export default function ChatForm({ onSubmitMessage }: ChatFormProps) {
     }
 
     return (
-        <div className="flex w-full min-h-12 items-center rounded-2xl bg-secondary px-3 py-1.5 sm:px-4 sm:py-2">
+        <div className="flex w-full min-h-12 items-center rounded-2xl bg-tertiary/30 border border-neutral/10 px-3 py-1.5 sm:px-4 sm:py-2">
             <Form ref={formRef} action={handleSubmit} className="flex w-full flex-row items-center gap-2 sm:gap-3">
                 <div className="flex flex-1 items-center px-1.5 sm:px-3">
                     <textarea
