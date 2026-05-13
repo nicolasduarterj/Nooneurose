@@ -49,6 +49,7 @@ export const chatsTable = pgTable('chats', {
 export type Prompt = typeof promptsTable.$inferSelect
 export type Response = typeof responsesTable.$inferSelect
 export type Message = typeof messagesTable.$inferInsert
+export type Chat = typeof chatsTable.$inferSelect
 
 export type MessageAndResponse = {
     messages: Message,
