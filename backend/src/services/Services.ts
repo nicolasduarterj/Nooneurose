@@ -10,12 +10,20 @@ import MockPromptService from "./PromptService/MockPromptService";
 import DatabaseMessageStorageService from "./MessageStorageService/DatabaseMessageStorageService";
 import MainPromptService from "./PromptService/MainPromptService";
 import LocalMessageStorage from "./MessageStorageService/LocalMessageStorage";
+import IUserService from "./UserService/UserService";
+import MainUserService from "./UserService/MainUserService";
+import MockUserService from "./UserService/MockUserService";
+import LocalUserService from "./UserService/LocalUserService";
+import ICharacterService from "./CharacterService/ICharacterService";
+import MainCharacterService from "./CharacterService/MainCharacterService";
 
 
 export interface Services {
     AIService: IAIService,
     MessageStorageService: IMessageStorageService,
     PromptService: IPromptService
+    UserService: IUserService
+    CharacterService: ICharacterService
 }
 
 export function getServices(): Services {
@@ -24,19 +32,25 @@ export function getServices(): Services {
             return { 
                 AIService: MockAIService, 
                 MessageStorageService: LocalMessageStorage,
-                PromptService: LocalPromptService
+                PromptService: LocalPromptService,
+                UserService: LocalUserService,
+                CharacterService: MainCharacterService
             }
         case "test":
             return { 
                 AIService: MockAIService,
                 MessageStorageService: MockStorageService,
-                PromptService: MockPromptService
+                PromptService: MockPromptService,
+                UserService: MockUserService,
+                CharacterService: MainCharacterService
             }
         case "production":
             return {
                 AIService: MainAIService,
                 MessageStorageService: DatabaseMessageStorageService,
-                PromptService: MainPromptService
+                PromptService: MainPromptService,
+                UserService: MainUserService,
+                CharacterService: MainCharacterService
             }
     }
 }

@@ -10,6 +10,8 @@ import BaseRouter from '@src/routes/apiRouter';
 
 import EnvVars, { NodeEnvs } from './common/constants/env';
 import AIServiceError from './common/types/AIServiceError';
+import DatabaseError from './common/types/DatabaseError';
+import PromptServiceError from './common/types/PromptServiceError';
 
 /******************************************************************************
                                 Setup
@@ -45,8 +47,17 @@ app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
   if (err instanceof RouteError) {
     res.status(err.status).json({ error: err.message });
   }
-  if (err instanceof AIServiceError) {
+  else if (err instanceof AIServiceError) {
     res.status(500).json({ error: 'Problem with our AI provider' })
+  }
+  else if (err instanceof DatabaseError) {
+    res.status(500).json({ error: 'Problem with our database'})
+  }
+  else if (err instanceof PromptServiceError) {
+    res.status(500).json({ error: 'Problem obtaining prompt' })
+  }
+  else {
+    res.status(500).json({ error: 'An unknown error ocurred' })
   }
   return next(err);
 });

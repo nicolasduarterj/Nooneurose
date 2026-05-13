@@ -24,24 +24,24 @@ export default function Chat() {
     useEffect(() => {
         const init = async () => {
             const stored = localStorage.getItem("chatUUID");
- 
+
             if (!stored) {
                 const newUUID = uuidv4();
                 localStorage.setItem("chatUUID", newUUID);
                 setChatUUID(newUUID);
                 return;
             }
- 
+
             setChatUUID(stored);
- 
+
             try {
                 const res = await fetch(`${API_BASE}/api/chat/${stored}`);
- 
+
                 if (!res.ok) throw new Error(`Erro ao buscar histórico: ${res.status}`);
- 
+
                 // Conversao do formato do backEnd para o formato frontEnd
                 const history: Array<{ message: string; response: string | null }> = await res.json();
- 
+
                 const mapped: Array<Message> = history.flatMap((item, index) => {
                     const base = index * 2;
                     const entries: Array<Message> = [
@@ -62,21 +62,21 @@ export default function Chat() {
                     }
                     return entries;
                 });
- 
+
                 setMessages(mapped);
             } catch (error) {
                 console.error("Falha ao carregar histórico:", error);
             }
         };
- 
+
         init();
     }, []);
 
 
-    
+
     const handleSendMessage = async (message: string) => {
         if (!chatUUID) return;
-        
+
         const tempId = Date.now();
 
         const userMessage: Message = {
@@ -100,11 +100,11 @@ export default function Chat() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message, chatUUID }),
             });
- 
+
             if (!res.ok) throw new Error(`Erro na resposta da IA: ${res.status}`);
- 
+
             const data: { response: string } = await res.json();
- 
+
             setMessages((prev) => [
                 ...prev,
                 userMessage,
@@ -118,12 +118,15 @@ export default function Chat() {
     };
 
     return (
-        <main className="mx-auto h-screen w-[70vw] max-w-5xl bg-tertiary pt-1.5 px-1.5 pb-7.5 flex flex-col overflow-hidden">
-            <div className="min-h-0 flex-1">
-                <ChatMessageList messages={optimisticMessages} />
-            </div>
-            <div className="pt-7.5 shrink-0">
-                <ChatForm onSubmitMessage={handleSendMessage} />
+        <main className="relative h-screen w-screen overflow-hidden custom-scrollbar">
+            <div className="chat-mesh-gradient" aria-hidden="true" />
+            <div className="relative z-10 mx-auto h-screen w-full px-2 pt-1 pb-4 md:w-[70vw] md:max-w-5xl md:px-1.5 md:pt-0.5 md:pb-7.5 flex flex-col overflow-hidden">
+                <div className="min-h-0 flex-1">
+                    <ChatMessageList messages={optimisticMessages} />
+                </div>
+                <div className="shrink-0 pt-1.5 md:pt-2">
+                    <ChatForm onSubmitMessage={handleSendMessage} />
+                </div>
             </div>
         </main>
     )

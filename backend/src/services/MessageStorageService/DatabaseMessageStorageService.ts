@@ -1,9 +1,10 @@
 import { Message, MessageAndResponse, messagesTable, Response, responsesTable } from "@src/db/schema";
 import db from "@src/db/db";
 import { and, eq } from "drizzle-orm";
-import DatabaseError from "@src/common/types/DatabaseError";
+import DatabaseError, { ThrowsDatabaseError } from "@src/common/types/DatabaseError";
 
 export default abstract class DatabaseMessageStorageService {
+    @ThrowsDatabaseError
     public static async registerMessage(content: string, chat_uuid: string): Promise<Message> {
         const message: typeof messagesTable.$inferInsert = {
             content,
@@ -14,11 +15,13 @@ export default abstract class DatabaseMessageStorageService {
         return res[0]
     }
 
+    @ThrowsDatabaseError
     public static async getMessagesByChat(chat_uuid: string): Promise<Message[]> {
         const res = await db.select().from(messagesTable).where(eq(messagesTable.chatUUID, chat_uuid))
         return res
     }
 
+    @ThrowsDatabaseError
     public static async markMessageAsIncluded(msg_id: number): Promise<Message | null> {
         const res = await db.update(messagesTable)
             .set({ isIncludedInPrompt: true })
@@ -27,6 +30,7 @@ export default abstract class DatabaseMessageStorageService {
         return res[0]
     }
 
+    @ThrowsDatabaseError
     public static async getUnusedMessages(chat_uuid: string): Promise<Message[]> {
         const res = await db.select().from(messagesTable)
             .where(
@@ -37,6 +41,7 @@ export default abstract class DatabaseMessageStorageService {
         return res
     }
 
+    @ThrowsDatabaseError
     public static async registerResponse(content: string, msg_id: number): Promise<Response> {
         const msgCandidates = await db.select().from(messagesTable).where(eq(messagesTable.id, msg_id))
 
@@ -53,6 +58,7 @@ export default abstract class DatabaseMessageStorageService {
         return res[0]
     }
 
+    @ThrowsDatabaseError
     public static async getMessagesAndResponsesByChat(chatUUID: string): Promise<MessageAndResponse[]> {
         const res = await db.select().from(messagesTable)
             .leftJoin(responsesTable, eq(messagesTable.id, responsesTable.parentId))
