@@ -5,6 +5,7 @@ import User from "@src/models/common/User"
 export default abstract class MockChatService {
     private static nextId = 9000
 
+    //eslint-disable-next-line @typescript-eslint/require-await
     public static async create(owner: User, character: Character): Promise<Chat> {
         return {
             id: MockChatService.nextId++,
@@ -13,6 +14,7 @@ export default abstract class MockChatService {
         }
     }
 
+    //eslint-disable-next-line @typescript-eslint/require-await
     public static async getChatsByUser(user: User): Promise<Chat[]> {
         return [
             {
@@ -28,6 +30,7 @@ export default abstract class MockChatService {
         ]
     }
 
+    //eslint-disable-next-line @typescript-eslint/require-await
     public static async getChatsById(id: number): Promise<Chat | null> {
         return {
             id,

@@ -5,6 +5,7 @@ import { RouteError } from "@src/common/utils/route-errors";
 import { Router } from "express";
 import Paths from "@src/common/constants/Paths";
 
+
 const chatRouter = Router()
 
 /**

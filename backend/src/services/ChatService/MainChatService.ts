@@ -7,10 +7,10 @@ import { eq } from "drizzle-orm"
 
 export default abstract class MainChatService {
     public static async create(owner: User, character: Character): Promise<Chat> {
-        const res = await db.insert(chatsTable).values({
+        const res: (typeof chatsTable.$inferInsert)[] = await db.insert(chatsTable).values({
             ownerId: owner.id,
             characterId: character.id,
-        }),returning()
+        }).returning()
 
         return res[0]
     }
