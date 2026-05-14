@@ -1,5 +1,7 @@
 import { Prompt } from '@src/db/schema'
 import { getServices } from '../Services';
+import Character from '@src/models/common/Character';
+import Chat from '@src/models/common/Chat';
 
 export default abstract class LocalPromptService {
 
@@ -10,36 +12,28 @@ export default abstract class LocalPromptService {
     private static promptStore: Prompt[] = [];  // prompt minúsculo
     private static nextId = 1;
 
-    /**
-     * Registers a new prompt in the in-memory store.
-     * @param content - The prompt text.
-     * @param parent_id - Optional ID of the parent prompt (for chaining).
-     * @returns The newly created prompt object.
-     */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerPrompt(content: string, parent_id: number | null = null): Promise<Prompt> {  // prompt minúsculo
+    public static async register(content: string, parentId: number | null = null, character: Character): Promise<Prompt> {  // prompt minúsculo
         const newPrompt: Prompt = {
             id: LocalPromptService.nextId++,
-            parentId: parent_id,
+            parentId: parentId,
             content,
-            timestamp: new Date()
+            timestamp: new Date(),
+            character: character.id
         }
         LocalPromptService.promptStore.push(newPrompt);
         return newPrompt;
   }
 
-    /**
-     * Returns the most recently created prompt.
-     * @returns The latest prompt or null if no prompts exist.
-     */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getLatestPrompt(): Promise<Prompt> {  // prompt minúsculo
+    public static async getLatestPrompt(character: Character): Promise<Prompt> {  // prompt minúsculo
         if (LocalPromptService.promptStore.length === 0)  {
             return {
                 id: LocalPromptService.nextId++,
                 parentId: null,
                 content: 'Mock prompt',
-                timestamp: new Date()
+                timestamp: new Date(),
+                character: 1
             }
         }
         return LocalPromptService.promptStore[LocalPromptService.promptStore.length - 1];
@@ -51,11 +45,12 @@ export default abstract class LocalPromptService {
      * @param chat_uuid - The chat session identifier.
      * @returns The generated prompt, or null if no unused messages exist.
      */
-    public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null> {  // prompt minúsculo
+    public static async generatePromptFromUnusedMessages(chat: Chat): Promise<Prompt | null> {  // prompt minúsculo
         const services = getServices()
-        const unusedMessages = await services.MessageStorageService.getUnusedMessages(chat_uuid);
+        const unusedMessages = await services.MessageStorageService.getUnusedMessages(chat)
+        const character = await services.CharacterService.getById(chat.characterId)
 
-        if (unusedMessages.length === 0) return null;
+        if (unusedMessages.length === 0 || !character) return null;
 
         // Build prompt by joining all message contents
         const promptText = unusedMessages
@@ -66,9 +61,9 @@ export default abstract class LocalPromptService {
         await Promise.all(unusedMessages.map((msg) => services.MessageStorageService.markMessageAsIncluded(msg.id)))
 
         // Register the prompt
-        const latestPrompt = await LocalPromptService.getLatestPrompt();
+        const latestPrompt = await LocalPromptService.getLatestPrompt(character);
         const parentId = latestPrompt ? latestPrompt.id : null;
-        const newPrompt = LocalPromptService.registerPrompt(promptText, parentId);
+        const newPrompt = LocalPromptService.register(promptText, parentId, character);
 
         return newPrompt;
     }

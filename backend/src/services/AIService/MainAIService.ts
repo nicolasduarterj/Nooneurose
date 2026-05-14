@@ -1,9 +1,9 @@
 import openRouter from "@src/common/constants/openRouter"
 import EnvVars from "@src/common/constants/env"
 import AIServiceError, { ThrowsAIServiceError } from "@src/common/types/AIServiceError"
-import { MessageAndResponse } from "@src/db/schema"
 import { ChatCompletionMessageParam } from "openai/resources/index.js"
 import logger from 'jet-logger'
+import Message from "@src/models/common/Message"
 
 export default class MainAIService {
     private static basePrompt: string
@@ -21,33 +21,21 @@ export default class MainAIService {
      * @throws AIServiceError
      */
     @ThrowsAIServiceError
-    public static async sendMessage(msg: string, systemPrompt: string, history?: MessageAndResponse[]): Promise<string> {
-        const historyFormatted: ChatCompletionMessageParam[] = []
-        const historyCast = history ?? []
+    public static async sendMessage(msg: string, systemPrompt: string, history?: Message[]): Promise<string> {
 
-        for (const mar of historyCast) {
-            historyFormatted.push({
-                role: 'user',
-                content: mar.messages.content
-            })
-            if (mar.responses)
-                historyFormatted.push({
-                    role: 'assistant',
-                    content: mar.responses.content
-                })
+        const newmsg: ChatCompletionMessageParam = {
+            content: msg,
+            role: 'user'
         }
 
-        const messages: ChatCompletionMessageParam[] = [
-            {
-                role: 'system',
-                content: systemPrompt
-            },
-            ...historyFormatted,
-            {
-                role: 'user',
-                content: msg
-            }
-        ]
+        const systemmsg: ChatCompletionMessageParam = {
+            content: systemPrompt,
+            role: 'system'
+        }
+
+        const messages = history
+            ? [systemmsg, ...history.map(msg => ({ content: msg.content, role: msg.source })), newmsg]
+            : [systemmsg, newmsg]
 
         logger.info('Sending following completion request to AI:')
         logger.info(JSON.stringify(messages))

@@ -1,5 +1,6 @@
 import DatabaseError from "@src/common/types/DatabaseError";
-import { Message, MessageAndResponse, Response } from "@src/db/schema";
+import Message from "@src/models/common/Message";
+import Chat from "@src/models/common/Chat";
 
 export default abstract class LocalMessageStorage {
     /** 
@@ -8,8 +9,8 @@ export default abstract class LocalMessageStorage {
      * This mimics a relational DB table and will be replaced by Drizzle ORM queries later.
     */
 
-    private static messageStore: Map<string, Message[]> = new Map();
-    private static responseStore: Map<string, Response[]> = new Map();
+    private static messageStore: Message[] = [];
+    private static responseStore: Message[] = [];
     private static nextId = 1;
 
     /**
@@ -19,19 +20,17 @@ export default abstract class LocalMessageStorage {
      * @returns The newly created Message object.
      */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerMessage(content: string, chat_uuid: string): Promise<Message> {
+    public static async registerMessage(content: string, chat: Chat): Promise<Message> {
         const message: Message = {
             id: LocalMessageStorage.nextId++,
             content: content,
             isIncludedInPrompt: false,
             timestamp: new Date(),
-            chatUUID: chat_uuid
+            chatId: chat.id,
+            source: 'user'
         }
 
-        const chatMessages = LocalMessageStorage.messageStore.get(chat_uuid) || [];
-        chatMessages.push(message);
-        LocalMessageStorage.messageStore.set(chat_uuid, chatMessages);
-
+        LocalMessageStorage.messageStore.push(message)
         return message;
     }
 
@@ -41,8 +40,8 @@ export default abstract class LocalMessageStorage {
      * @returns An array of Messages (empty array if chat has no messages).
      */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getMessagesByChat(chat_uuid: string): Promise<Message[]> {
-        return LocalMessageStorage.messageStore.get(chat_uuid) || [];
+    public static async getMessagesByChat(chat: Chat): Promise<Message[]> {
+        return LocalMessageStorage.messageStore.filter(msg => msg.chatId === chat.id)
     }
 
     /**
@@ -51,15 +50,17 @@ export default abstract class LocalMessageStorage {
      * @returns The updated Message, or null if not found.
      */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async markMessageAsIncluded(msg_id: number): Promise<Message | null> {
-        for (const messages of LocalMessageStorage.messageStore.values()) {
-            const found = messages.find((m) => m.id === msg_id);
-            if (found) {
-                found.isIncludedInPrompt = true;
-                return found;
+    public static async markMessageAsIncluded(msgId: number): Promise<Message | null> {
+        for (let i = 0; i < LocalMessageStorage.messageStore.length; i++) {
+            if (
+                !LocalMessageStorage.messageStore[i].isIncludedInPrompt &&
+                LocalMessageStorage.messageStore[i].id === msgId
+            ) {
+                LocalMessageStorage.messageStore[i].isIncludedInPrompt = true
+                return LocalMessageStorage.messageStore[i]
             }
         }
-        return null;
+        return null
     }
 
     /**
@@ -68,51 +69,37 @@ export default abstract class LocalMessageStorage {
      * @returns Array of unused Messages.
      */
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getUnusedMessages(chat_uuid: string): Promise<Message[]> {
-        const chatMessages = LocalMessageStorage.messageStore.get(chat_uuid) || [];
-        return chatMessages.filter((m) => !m.isIncludedInPrompt);
+    public static async getUnusedMessages(chat: Chat): Promise<Message[]> {
+        return LocalMessageStorage.messageStore.filter(msg =>
+            msg.chatId === chat.id && !msg.isIncludedInPrompt
+        )
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerResponse(content: string, msg_id: number): Promise<Response> {
-        const res: Response = {
-            id: LocalMessageStorage.nextId++,
-            content,
-            timestamp: new Date(),
-            parentId: msg_id
-        }
-
-        let chatUUID = ''
-        for (const chat of LocalMessageStorage.messageStore.values()) {
-            const msg = chat.find(msg => msg.id === msg_id)
-            if (msg) {
-                chatUUID = msg.chatUUID
-            }
-        }
-
-        if (!chatUUID)
+    public static async registerResponse(content: string, msgId: number): Promise<Message> {
+        const baseMsg = LocalMessageStorage.messageStore.find(msg => msg.id === msgId)
+        if (!baseMsg)
             throw new DatabaseError()
 
-        const responses = LocalMessageStorage.responseStore.get(chatUUID) || []
-        LocalMessageStorage.responseStore.set(chatUUID, responses.concat(res))
-        return res
+        const newmsg: Message = {
+            id: ++LocalMessageStorage.nextId,
+            content: content,
+            chatId: baseMsg.chatId,
+            isIncludedInPrompt: false,
+            source: 'assistant',
+            timestamp: new Date()
+        }
+
+        LocalMessageStorage.responseStore.push(newmsg)
+        return newmsg
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getMessagesAndResponsesByChat(chat_uuid: string): Promise<MessageAndResponse[]> {
+    public static async getMessagesAndResponsesByChat(chat: Chat): Promise<Message[]> {
+        const msgs = LocalMessageStorage.messageStore.filter(msg => msg.chatId === chat.id)
+        const responses = LocalMessageStorage.responseStore.filter(msg => msg.chatId === chat.id)
 
-        const result: MessageAndResponse[] = []
-
-        const messages = LocalMessageStorage.messageStore.get(chat_uuid) || []
-        const responses = LocalMessageStorage.responseStore.get(chat_uuid) || []
-
-        for (let i = 0; i < messages.length; i++) {
-            result.push({
-                messages: messages[i],
-                responses: responses.find(res => res.parentId === messages[i].id) ?? null
-            })
-        }
-
+        const result = msgs.concat(responses)
         return result
     }
 }

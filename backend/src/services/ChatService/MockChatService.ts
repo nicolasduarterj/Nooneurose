@@ -31,7 +31,7 @@ export default abstract class MockChatService {
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getChatsById(id: number): Promise<Chat | null> {
+    public static async getChatById(id: number): Promise<Chat | null> {
         return {
             id,
             ownerId :1,

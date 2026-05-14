@@ -1,64 +1,61 @@
-import { Req, Res } from "./common/express-types";
-
-import { getServices } from "@src/services/Services";
-import { RouteError } from "@src/common/utils/route-errors";
 import { Router } from "express";
+import { getServices } from "@src/services/Services";
 import Paths from "@src/common/constants/Paths";
-
+import { Req, Res } from "./common/express-types";
+import authorize from "@src/common/utils/middleware/authorize";
+import { RouteError } from "@src/common/utils/route-errors";
 
 const chatRouter = Router()
 
-/**
- * Get all messages and responses of a chat
- */
-chatRouter.get(Paths.Chat.ChatUUID, async function(req: Req, res: Res) {
-    const chatUUID = req.params.chatUUID
+chatRouter.post('/', authorize, async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
 
-    if (!chatUUID)
-        throw new RouteError(400, 'Invalid chatUUID')
+    const characterId = parseInt(req.body['characterId'])
+    if (Number.isNaN(characterId))
+        throw new RouteError(400, 'Invalid character id')
 
     const services = getServices()
+    const character = await services.CharacterService.getById(characterId)
+    if (!character)
+        throw new RouteError(400, 'Inexistent character')
 
-    const result = await services.MessageStorageService.getMessagesAndResponsesByChat(chatUUID)
-    const filteredResult = result.map(msgAndResponse => ({ 
-        message: msgAndResponse.messages.content,
-        response: msgAndResponse.responses?.content ?? null
-    }))
-    res.json(filteredResult)
+
+    const newChat = await services.ChatService.create(req.user, character)
+    res.json(newChat)
 })
 
-/**cria novo chat para o usuário autenticado*/
-chatRouter.post('/', async function(req: Req, res: Res) {
-    if (req.headers['content-type'] !== 'application/json')
-        throw new RouteError(400, 'Invalid content-type')
- 
-    if (!req.body['characterId'])
-        throw new RouteError(400, 'Missing parameter: characterId')
- 
-    const user = req.user
-    if (!user)
-        throw new RouteError(401, 'Unauthorized')
- 
+chatRouter.get(Paths.Chat.ChatId._, authorize, async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const chatId = parseInt(req.params.id)
+    if (Number.isNaN(chatId))
+        throw new RouteError(400, 'Invalid chatId')
+
     const services = getServices()
- 
-    const character = await services.CharacterService.getById(Number(req.body['characterId']))
-    if (!character)
-        throw new RouteError(404, 'Character not found')
- 
-    const chat = await services.ChatService.create(user, character)
+    const chat = await services.ChatService.getChatById(chatId)
+    if (!chat || chat.ownerId !== req.user.id)
+        throw new RouteError(404, 'Inexistent chat')
+
     res.json(chat)
 })
 
-/**Pega todos os chats do usuário*/
-chatRouter.get('/', async function(req: Req, res: Res) {
-    const user = req.user
-    if (!user)
-        throw new RouteError(401, 'Unauthorized')
- 
+chatRouter.get(Paths.Chat.ChatId.Messages, authorize, async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const chatId = parseInt(req.params.id)
+    if (Number.isNaN(chatId))
+        throw new RouteError(400, 'Invalid chatId')
+
     const services = getServices()
- 
-    const chats = await services.ChatService.getChatsByUser(user)
-    res.json(chats)
+    const chat = await services.ChatService.getChatById(chatId)
+    if (!chat || chat.ownerId !== req.user.id)
+        throw new RouteError(404, 'Inexistent chat')
+
+    const messages = await services.MessageStorageService.getMessagesAndResponsesByChat(chat)
+    res.json(messages)
 })
 
 export default chatRouter

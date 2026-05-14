@@ -8,11 +8,18 @@ const Paths = {
     },
     Chat: {
         _: '/chat',
-        ChatUUID: '/:chatUUID'
+        ChatId: {
+            _: '/byId/:id',
+            Messages: '/byId/:id/messages'
+        }
     },
     User: {
         _: '/user',
         Login: '/login'
+    },
+    Character: {
+        _: '/character',
+        ById: '/byId/:id',
     }
 } as const;
 

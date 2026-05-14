@@ -1,4 +1,5 @@
-import { Message, MessageAndResponse, Response } from "@src/db/schema";
+import Message from "@src/models/common/Message";
+import Chat from "@src/models/common/Chat";
 
 export default abstract class MockStorageService {
     /**
@@ -8,86 +9,96 @@ export default abstract class MockStorageService {
     private static nextId = 1000; // IDs diferentes para distinguir dos reais
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerMessage(content: string, chat_uuid: string): Promise<Message> {
+    public static async registerMessage(content: string, chat: Chat): Promise<Message> {
         return {
             id: MockStorageService.nextId++,
             content: `MOCK: ${content}`,
-            chatUUID: chat_uuid,
+            chatId: chat.id,
             isIncludedInPrompt: false,
             timestamp: new Date(),
+            source: 'assistant'
         };
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getMessagesByChat(chat_uuid: string): Promise<Message[]> {
+    public static async getMessagesByChat(chat: Chat): Promise<Message[]> {
         return [
             {
                 id: 1,
                 content: 'Mock message 1',
-                chatUUID: chat_uuid,
+                chatId: chat.id,
                 isIncludedInPrompt: false,
                 timestamp: new Date(),
+                source: 'user'
             },
             {
                 id: 2,
                 content: 'Mock message 2',
-                chatUUID: chat_uuid,
+                chatId: chat.id,
                 isIncludedInPrompt: false,
                 timestamp: new Date(),
+                source: 'user'
             },
         ];
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async markMessageAsIncluded(msg_id: number): Promise<Message | null> {
+    public static async markMessageAsIncluded(msgId: number): Promise<Message | null> {
         return {
-            id: msg_id,
+            id: msgId,
             content: 'Mock message marked as included',
-            chatUUID: 'mock-chat',
+            chatId: 1,
             isIncludedInPrompt: true,
             timestamp: new Date(),
+            source: 'user'
         };
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getUnusedMessages(chat_uuid: string): Promise<Message[]> {
+    public static async getUnusedMessages(chat: Chat): Promise<Message[]> {
         return [
             {
                 id: 1,
                 content: 'Mock unused message',
-                chatUUID: chat_uuid,
+                chatId: chat.id,
                 isIncludedInPrompt: false,
                 timestamp: new Date(),
+                source: 'user'
             },
         ];
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerResponse(content: string, msg_id: number): Promise<Response> {
+    public static async registerResponse(content: string, msgId: number): Promise<Message> {
         return {
             id: 1,
             content: 'Mock response',
             timestamp: new Date(),
-            parentId: 1
+            chatId: 12,
+            source: 'assistant',
+            isIncludedInPrompt: false
         }
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getMessagesAndResponsesByChat(chat_uuid: string): Promise<MessageAndResponse[]> {
-        return [{
-            messages: {
+    public static async getMessagesAndResponsesByChat(chat: Chat): Promise<Message[]> {
+        return [
+            {
                 id: 1,
                 content: 'Mock response',
                 timestamp: new Date(),
                 isIncludedInPrompt: false,
-                chatUUID: chat_uuid
+                chatId: chat.id,
+                source: 'user'
             },
-            responses: {
+            {
                 id: 1,
                 content: 'Mock response',
                 timestamp: new Date(),
-                parentId: 1
+                isIncludedInPrompt: false,
+                chatId: chat.id,
+                source: 'assistant'
             }
-        }]
+        ]
     }
 }
