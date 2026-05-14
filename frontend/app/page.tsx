@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-type Phase =
-  | 'black'    // tela preta inicial
-  | 'fadein'   // conteúdo surge
-  | 'idle'     // esperando interação
-  | 'leaving'; // navegando
+import { Phase } from './types/phase'
  
 export default function Home() {
   const [phase, setPhase] = useState<Phase>('black');
@@ -39,7 +34,7 @@ export default function Home() {
   return (
     <main className="relative w-screen h-screen bg-black flex items-center justify-center overflow-hidden">
  
-      <div className="bg-fog" />
+      <div className="bg-muted" />
 
       {/*Garantia de transição fluida*/}
       {isLeaving && (
