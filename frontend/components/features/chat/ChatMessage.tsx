@@ -1,4 +1,4 @@
-import { Message } from "@/app/types/message";
+import { Message } from "@/types/message";
 import { BotMessageSquare, CircleUser } from "lucide-react";
 
 type ChatMessageProps = {
@@ -18,7 +18,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         )
         }
       </div>
-      <div className="flex min-w-0 flex-1 rounded-3xl border-secondary bg-secondary px-3 py-2.5 text-neutral drop-shadow-neutral-950 sm:px-4 sm:py-4">
+      <div className="flex min-w-0 flex-1 rounded-2xl border border-primary/50 bg-tertiary/30 px-3 py-2.5 text-neutral drop-shadow-neutral-950 sm:px-4 sm:py-4">
         <p className="text-sm text-justify whitespace-pre-wrap wrap-anywhere sm:text-base">{message.content}</p>
       </div>
     </div>
