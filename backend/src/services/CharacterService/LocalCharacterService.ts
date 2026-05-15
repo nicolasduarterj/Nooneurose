@@ -25,4 +25,15 @@ export default abstract class LocalCharacterService {
     public static async getById(id: number): Promise<Character | null> {
         return this.characterStore.find(char => char.id === id) ?? null
     }
+
+    //eslint-disable-next-line
+    public static async getByUser(user: User): Promise<Character[]> {
+        return this.characterStore.filter(char => char.ownerId === user.id)
+    }
+
+    //eslint-disable-next-line
+    public static async queryByName(targetName: string): Promise<Character[]> {
+        const regex = new RegExp(`.*${targetName}.*`)
+        return this.characterStore.filter(char => regex.test(char.name))
+    }
 }

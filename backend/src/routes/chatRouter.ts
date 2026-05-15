@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { getServices } from "@src/services/Services";
-import Paths from "@src/common/constants/Paths";
+import { APIPaths } from "@src/common/constants/Paths";
 import { Req, Res } from "./common/express-types";
 import authorize from "@src/common/utils/middleware/authorize";
 import { RouteError } from "@src/common/utils/route-errors";
 
 const chatRouter = Router()
 
-chatRouter.post('/', authorize, async function(req: Req, res: Res) {
+chatRouter.post(APIPaths.User.Chats._(), authorize, async function(req: Req, res: Res) {
     if (!req.user)
         throw new RouteError(500, 'error missing user')
 
@@ -25,7 +25,16 @@ chatRouter.post('/', authorize, async function(req: Req, res: Res) {
     res.json(newChat)
 })
 
-chatRouter.get(Paths.Chat.ChatId._, authorize, async function(req: Req, res: Res) {
+chatRouter.get(APIPaths.User.Chats._(), authorize, async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const services = getServices()
+    const chats = await services.ChatService.getChatsByUser(req.user)
+    res.json(chats)
+})
+
+chatRouter.get(APIPaths.User.Chats.ChatId._(), authorize, async function(req: Req, res: Res) {
     if (!req.user)
         throw new RouteError(500, 'error missing user')
 
@@ -41,7 +50,7 @@ chatRouter.get(Paths.Chat.ChatId._, authorize, async function(req: Req, res: Res
     res.json(chat)
 })
 
-chatRouter.get(Paths.Chat.ChatId.Messages, authorize, async function(req: Req, res: Res) {
+chatRouter.get(APIPaths.User.Chats.ChatId.Messages(), authorize, async function(req: Req, res: Res) {
     if (!req.user)
         throw new RouteError(500, 'error missing user')
 

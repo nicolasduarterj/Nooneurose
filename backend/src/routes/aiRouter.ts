@@ -3,12 +3,12 @@ import { Req, Res } from "./common/express-types";
 import { getServices } from "@src/services/Services";
 import { RouteError } from "@src/common/utils/route-errors";
 import { Router } from "express";
-import Paths from "@src/common/constants/Paths";
+import { APIPaths } from "@src/common/constants/Paths";
 import authorize from "@src/common/utils/middleware/authorize";
 
 const aiRouter = Router()
 
-aiRouter.post(Paths.AI.Send, authorize, async function(req: Req, res: Res) {
+aiRouter.post(APIPaths.AI.Send(), authorize, async function(req: Req, res: Res) {
     const services = getServices()
 
     if (req.headers['content-type'] != 'application/json') {

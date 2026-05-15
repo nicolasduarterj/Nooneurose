@@ -3,11 +3,11 @@ import { Router } from "express";
 import { Req, Res } from "./common/express-types";
 import { RouteError } from "@src/common/utils/route-errors";
 import { getServices } from "@src/services/Services";
-import Paths from "@src/common/constants/Paths";
+import { APIPaths } from "@src/common/constants/Paths";
 
 const characterRouter = Router()
 
-characterRouter.post('/', authorize, async function(req: Req, res: Res) {
+characterRouter.post(APIPaths.Character._(), authorize, async function(req: Req, res: Res) {
     if (!req.body['name'] || !req.body['description'] || !req.user) 
         throw new RouteError(400, 'missing parameters')
 
@@ -21,7 +21,7 @@ characterRouter.post('/', authorize, async function(req: Req, res: Res) {
     res.json(character)
 })
 
-characterRouter.get(Paths.Character.ById, async function(req: Req, res: Res) {
+characterRouter.get(APIPaths.Character.ById(), async function(req: Req, res: Res) {
     const id = parseInt(req.params.id)
     if (Number.isNaN(id))
         throw new RouteError(400, 'invalid id')
@@ -32,6 +32,16 @@ characterRouter.get(Paths.Character.ById, async function(req: Req, res: Res) {
         throw new RouteError(400, 'invalid id')
 
     res.json(character)
+})
+
+characterRouter.get(APIPaths.Character.Search(), async function(req: Req, res: Res) {
+    const services = getServices()
+
+    if (!req.params.query)
+        throw new RouteError(400, 'missing query')
+
+    const match = await services.CharacterService.queryByName(req.params.query)
+    res.json(match)
 })
 
 export default characterRouter

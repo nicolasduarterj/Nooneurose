@@ -1,4 +1,5 @@
 import jetPaths from 'jet-paths';
+import transformPaths from '../utils/transform-paths';
 
 const Paths = {
     _: '/api',
@@ -6,22 +7,25 @@ const Paths = {
         _: '/ai',
         Send: '/send'
     },
-    Chat: {
-        _: '/chat',
-        ChatId: {
-            _: '/byId/:id',
-            Messages: '/byId/:id/messages'
-        }
-    },
     User: {
         _: '/user',
-        Login: '/login'
+        Login: '/login',
+        Chats: {
+            _: '/chats',
+            ChatId: {
+                _: '/:id',
+                Messages: '/messages'
+            }
+        },
+        Characters: 'characters'
     },
     Character: {
         _: '/character',
         ById: '/byId/:id',
+        Search: '/search/:query'
     }
 } as const;
 
 export const JetPaths = jetPaths(Paths);
 export default Paths;
+export const APIPaths = transformPaths(Paths)

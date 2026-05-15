@@ -21,4 +21,14 @@ export default abstract class MockCharacterService {
     public static async getById(id: number): Promise<Character> {
         return this.mockChar
     }
+
+    //eslint-disable-next-line
+    public static async getByUser(user: User): Promise<Character[]> {
+        return [this.mockChar]
+    }
+    
+    //eslint-disable-next-line
+    public static async queryByName(targetName: string): Promise<Character[]> {
+        return [this.mockChar]
+    }
 }
