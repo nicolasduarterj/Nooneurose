@@ -16,6 +16,12 @@ import MockUserService from "./UserService/MockUserService";
 import LocalUserService from "./UserService/LocalUserService";
 import ICharacterService from "./CharacterService/ICharacterService";
 import MainCharacterService from "./CharacterService/MainCharacterService";
+import IChatService from "./ChatService/IChatService";
+import LocalChatService from "./ChatService/LocalChatService";
+import MockChatService from "./ChatService/MockChatService";
+import MainChatService from "./ChatService/MainChatService";
+import LocalCharacterService from "./CharacterService/LocalCharacterService";
+import MockCharacterService from "./CharacterService/MockCharacterStore";
 
 
 export interface Services {
@@ -24,6 +30,7 @@ export interface Services {
     PromptService: IPromptService
     UserService: IUserService
     CharacterService: ICharacterService
+    ChatService: IChatService
 }
 
 export function getServices(): Services {
@@ -34,7 +41,8 @@ export function getServices(): Services {
                 MessageStorageService: LocalMessageStorage,
                 PromptService: LocalPromptService,
                 UserService: LocalUserService,
-                CharacterService: MainCharacterService
+                CharacterService: LocalCharacterService,
+                ChatService: LocalChatService
             }
         case "test":
             return { 
@@ -42,7 +50,8 @@ export function getServices(): Services {
                 MessageStorageService: MockStorageService,
                 PromptService: MockPromptService,
                 UserService: MockUserService,
-                CharacterService: MainCharacterService
+                CharacterService: MockCharacterService,
+                ChatService: MockChatService
             }
         case "production":
             return {
@@ -50,7 +59,8 @@ export function getServices(): Services {
                 MessageStorageService: DatabaseMessageStorageService,
                 PromptService: MainPromptService,
                 UserService: MainUserService,
-                CharacterService: MainCharacterService
+                CharacterService: MainCharacterService,
+                ChatService: MainChatService
             }
     }
 }

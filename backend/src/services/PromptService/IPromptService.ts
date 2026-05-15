@@ -1,7 +1,9 @@
 import { Prompt } from '@src/db/schema'
+import Character from '@src/models/common/Character';
+import Chat from '@src/models/common/Chat';
 
 export default interface IPromptService {
-    registerPrompt(content: string, parent_id?: number | null): Promise<Prompt>;
-    getLatestPrompt(): Promise<Prompt>;
-    generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null>;
+    register(content: string, parentId: number | null, character: Character): Promise<Prompt>
+    getLatestPrompt(character: Character): Promise<Prompt>;
+    generatePromptFromUnusedMessages(chat: Chat): Promise<Prompt | null>;
 }

@@ -1,10 +1,11 @@
-import { Message, MessageAndResponse, Response } from "@src/db/schema";
+import Chat from "@src/models/common/Chat";
+import Message from "@src/models/common/Message";
 
 export default interface IMessageStorageService {
-    registerMessage(content: string, chat_uuid: string): Promise<Message>;
-    getMessagesByChat(chat_uuid: string): Promise<Message[]>;
-    markMessageAsIncluded(msg_id: number): Promise<Message | null>;
-    getUnusedMessages(chat_uuid: string): Promise<Message[]>;
-    registerResponse(content: string, msg_id: number): Promise<Response>
-    getMessagesAndResponsesByChat(chat_uuid: string): Promise<MessageAndResponse[]>
+    registerMessage(content: string, chat: Chat): Promise<Message>;
+    getMessagesByChat(chat: Chat): Promise<Message[]>;
+    markMessageAsIncluded(msgId: number): Promise<Message | null>;
+    getUnusedMessages(chat: Chat): Promise<Message[]>;
+    registerResponse(content: string, msgId: number): Promise<Message>
+    getMessagesAndResponsesByChat(chat: Chat): Promise<Message[]>
 }

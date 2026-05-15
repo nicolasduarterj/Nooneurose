@@ -13,7 +13,8 @@ export const promptsTable = pgTable('prompts', {
     id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
     content: text('content').notNull(),
     parentId: integer('parent_id').references((): AnyPgColumn => promptsTable.id),
-    timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`)
+    timestamp: timestamp('timestamp', { withTimezone: true }).notNull().default(sql`now()`),
+    character: integer('character').references(() => charactersTable.id).notNull()
 })
 
 export const responsesTable = pgTable('responses', {
@@ -49,6 +50,7 @@ export const chatsTable = pgTable('chats', {
 export type Prompt = typeof promptsTable.$inferSelect
 export type Response = typeof responsesTable.$inferSelect
 export type Message = typeof messagesTable.$inferInsert
+export type Chat = typeof chatsTable.$inferSelect
 
 export type MessageAndResponse = {
     messages: Message,

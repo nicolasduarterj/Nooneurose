@@ -1,4 +1,6 @@
 import { Prompt } from '@src/db/schema'
+import Character from '@src/models/common/Character';
+import Chat from '@src/models/common/Chat';
 
 export default abstract class MockPromptService {
     /**
@@ -8,32 +10,35 @@ export default abstract class MockPromptService {
     private static nextId = 1000;
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async registerPrompt(content: string, parent_id: number | null = null): Promise<Prompt> {
+    public static async register(content: string, parent_id: number | null, character: Character): Promise<Prompt> {
         return {
             id: MockPromptService.nextId++,
             content: `MOCK: ${content}`,
             parentId: parent_id,
             timestamp: new Date(),
+            character: 1
         };
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async getLatestPrompt(): Promise<Prompt> {
+    public static async getLatestPrompt(character: Character): Promise<Prompt> {
         return {
             id: 999,
             content: 'Mock latest prompt',
             parentId: null,
             timestamp: new Date(),
+            character: character.id
         };
     }
 
     //eslint-disable-next-line @typescript-eslint/require-await
-    public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null> {
+    public static async generatePromptFromUnusedMessages(chat: Chat): Promise<Prompt | null> {
         return {
             id: MockPromptService.nextId++,
-            content: `Mock generated prompt from chat ${chat_uuid}`,
+            content: `Mock generated prompt from chat ${chat.id}`,
             parentId: 999,
-            timestamp: new Date()
+            timestamp: new Date(),
+            character: chat.characterId
         };
     }
 

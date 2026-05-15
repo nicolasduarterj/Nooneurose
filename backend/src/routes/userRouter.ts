@@ -4,13 +4,14 @@ import { Req, Res } from './common/express-types'
 import { Router } from 'express'
 import { RouteError } from '@src/common/utils/route-errors'
 import UserServiceError from '@src/common/types/UserServiceError'
-import Paths from '@src/common/constants/Paths'
+import { APIPaths } from '@src/common/constants/Paths'
 import jwt from 'jsonwebtoken'
 import EnvVars from '@src/common/constants/env'
+import authorize from '@src/common/utils/middleware/authorize'
 
 const userRouter = Router()
 
-userRouter.post('/', async function(req: Req, res: Res) {
+userRouter.post(APIPaths.User._(), async function(req: Req, res: Res) {
     const services = getServices()
 
     if (req.headers['content-type'] !== 'application/json') {
@@ -39,7 +40,7 @@ userRouter.post('/', async function(req: Req, res: Res) {
     }
 })
 
-userRouter.post(Paths.User.Login, async function(req: Req, res: Res) {
+userRouter.post(APIPaths.User.Login(), async function(req: Req, res: Res) {
     const services = getServices()
 
     if (req.headers['content-type'] !== 'application/json') {
@@ -57,6 +58,16 @@ userRouter.post(Paths.User.Login, async function(req: Req, res: Res) {
 
     const token = jwt.sign({ id: user.id }, EnvVars.JwtSecret)
     res.json({ token: token })
+})
+
+userRouter.get(APIPaths.User.Characters(), authorize, async function(req: Req, res: Res) {
+    const services = getServices()
+
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const characters = await services.CharacterService.getByUser(req.user)
+    res.json(characters)
 })
 
 export default userRouter

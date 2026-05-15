@@ -1,48 +1,169 @@
-## About
-
-This project was created with [express-generator-typescript](https://github.com/seanpmaxwell/express-generator-typescript).
-
-## Available Scripts
-
-### `npm run clean-install`
-
-Remove the existing `node_modules/` folder, `package-lock.json`, and reinstall all library modules.
-
-### `npm run dev` 
-
-Run the server in development with hot reloading and browser refresh (see `package.json` for all `npm run dev` variations)<br/>
-
-**IMPORTANT** development mode uses `swc` for performance reasons which DOES NOT check for typescript errors. Run `npm run type-check` to check for type errors. NOTE: you should use your IDE to prevent most type errors.
-
-### `npm test`
-
-Run unit-tests with <a href="https://vitest.dev/guide/">vitest</a>.
-
-### `npm run lint`
-
-Check for linting errors.
-
-### `npm run build`
-
-Build the project for production.
-
-### `npm start`
-
-Run the production build (Must be built first).
-
-### `npm run type-check`
-
-Check for typescript errors.
-
-## Additional Notes
-
-- If `npm run dev` gives you issues with bcrypt on MacOS you may need to run: `npm rebuild bcrypt --build-from-source`.
-
 ## Responsáveis pelo back-end (em ordem alfabética):
 - Lucas Batista
 - Nicolas Duarte
 
 # Rotas
+
+### /api/user
+```
+POST:
+    Cria um usuário
+    Content-Type: application/json
+
+    Estrutura do body: {
+        email: string,
+        name: string,
+        password: string
+    }
+
+    Estrutura da resposta: {
+        id: number,
+        name: string,
+        email: string,
+        password: string //HASH
+    }
+```
+
+### /api/user/login
+```
+POST:
+    Loga
+    Content-Type: application/json
+
+    Estrutura do body: {
+        email: string,
+        password: string
+    }
+
+    Estrutura da resposa: {
+        token: string, //Armazenem no local storage
+        name: string
+    }
+
+OBS: Para todos os pedidos abaixo, insira a string "Bearer <TOKEN DA RESPOSTA>" como valor do header Authorization
+```
+
+### /api/character
+Gerenciamento de personagens
+```
+POST:
+    Cria um personagem
+    Content-Type: application/json
+
+    Estrutura do body: {
+        name: string,
+        description: string
+    }
+
+    Estrutura da resposta: {
+        id: number
+        name: string
+        description: string
+        isGloballyChangeable: boolean
+        isPrivatelyChangeable: boolean
+        ownerId: number
+        imageURL: string | null
+    }
+```
+
+### /api/character/byId/:id
+```
+GET:
+    Retorna um personagem.
+    Estrutura da resposta: {
+        id: number
+        name: string
+        description: string
+        isGloballyChangeable: boolean
+        isPrivatelyChangeable: boolean
+        ownerId: number
+        imageURL: string | null
+    }
+```
+
+### /api/character/search/:query
+```
+GET:
+    Procura por personagens pelo nome
+    Estrutura da resposta: {
+        id: number
+        name: string
+        description: string
+        isGloballyChangeable: boolean
+        isPrivatelyChangeable: boolean
+        ownerId: number
+        imageURL: string | null
+    }
+```
+
+### /api/user/chats
+Gerencia chats do usuário
+```
+POST:
+    Cria um chat
+    Content-Type: application/json
+
+    Estrutura do body: {
+        characterId: number //id do personagem
+    }
+
+    Estrutura da resposta: {
+        id: number
+        ownerId: number
+        characterId: number
+    }
+
+GET:
+    Retorna todos os chats do usuário
+
+    Estrutura da resposta: {
+        id: number
+        ownerId: number
+        characterId: number
+    }[]
+```
+
+### /api/user/chats/:id
+```
+GET:
+    Retorna os detalhes do chat
+
+    Estrutura da resposta: {
+        id: number
+        ownerId: number
+        characterId: number
+    }
+```
+
+### /api/user/chats/:id/messages
+```
+GET:
+    Retorna todas as mensagens do chat
+
+    Estrutura da resposta: {
+        id: number
+        content: string
+        chatId: number
+        isIncludedInPrompt: boolean
+        source: 'assistant' | 'user'
+        timestamp: Date
+    }
+```
+
+### /api/user/characters
+```
+GET:
+    Retorna todos os personagens do usuário
+    Estrutura da resposta: {
+        id: number
+        name: string
+        description: string
+        isGloballyChangeable: boolean
+        isPrivatelyChangeable: boolean
+        ownerId: number
+        imageURL: string | null
+    }
+```
 
 ### /api/ai/send
 Envia uma mensagem para a IA
@@ -52,7 +173,7 @@ POST:
 
     Estrutura do body: {
         message: string, // mensagem do usuário
-        chatUUID: string // UUID do chat
+        chatId: string // UUID do chat
     }
 
     Estrutura da resposta (se 200): {
@@ -60,18 +181,4 @@ POST:
     }
 
     Erros: 400 (parâmetros faltando), 500 (problema com o provedor de IA)
-```
-
-### /api/chat/\[chatUUID\]
-Lista todas as mensagens e respostas de um chat
-```
-GET:
-    Content-Type: application/json
-
-    Estrutura da resposta: [
-        {
-            message: string, // Mensagem do usuário
-            response: string | null // Resposta da IA
-        }
-    ]
 ```

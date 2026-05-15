@@ -12,7 +12,7 @@
     },
     "useUnknownInCatchVariables": false,
     "types": ["vitest/globals"],
-    "outDir": "./dist"
+    "outDir": "./dist",
   },
   "ts-node": {
     "swc": false,

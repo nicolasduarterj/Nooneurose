@@ -2,7 +2,7 @@ import Character from "@src/models/common/Character"
 import { charactersTable } from "@src/db/schema"
 import db from "@src/db/db"
 import User from "@src/models/common/User"
-import { eq } from "drizzle-orm"
+import { eq, ilike } from "drizzle-orm"
 
 export default abstract class MainCharacterService {
     public static async create(name: string, description: string, owner: User): Promise<Character> {
@@ -22,5 +22,17 @@ export default abstract class MainCharacterService {
         if (res.length < 1)
             return null
         return res[0]
+    }
+
+    public static async getByUser(user: User): Promise<Character[]> {
+        const res = await db.select().from(charactersTable).where(eq(charactersTable.ownerId, user.id))
+        return res
+    }
+
+    public static async queryByName(targetName: string): Promise<Character[]> {
+        const res = await db.select().from(charactersTable)
+            .where(ilike(charactersTable.name, `%${targetName}%`))
+
+        return res
     }
 }

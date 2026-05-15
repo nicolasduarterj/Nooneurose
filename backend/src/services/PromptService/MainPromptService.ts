@@ -3,7 +3,10 @@ import { Prompt, promptsTable } from "@src/db/schema"
 import { desc } from "drizzle-orm"
 import DatabaseMessageStorageService from "../MessageStorageService/DatabaseMessageStorageService"
 import MainAIService from "../AIService/MainAIService"
-import { ThrowsPromptServiceError } from "@src/common/types/PromptServiceError"
+import PromptServiceError, { ThrowsPromptServiceError } from "@src/common/types/PromptServiceError"
+import Character from "@src/models/common/Character"
+import Chat from "@src/models/common/Chat"
+import { getServices } from "../Services"
 
 export default abstract class MainPromptService {
     private static baseSystemPrompt = 'PROMPT DE SISTEMA:' +
@@ -23,10 +26,11 @@ export default abstract class MainPromptService {
     ]
 
     @ThrowsPromptServiceError
-    public static async registerPrompt(content: string, parent_id: number | null): Promise<Prompt> {
+    public static async register(content: string, parentId: number | null, character: Character): Promise<Prompt> {
         const newPrompt: typeof promptsTable.$inferInsert = {
             content,
-            parentId: parent_id
+            parentId: parentId,
+            character: character.id
         }
 
         const res = await db.insert(promptsTable).values(newPrompt).returning()
@@ -36,27 +40,32 @@ export default abstract class MainPromptService {
     }
 
     @ThrowsPromptServiceError
-    public static async getLatestPrompt(): Promise<Prompt> {
+    public static async getLatestPrompt(character: Character): Promise<Prompt> {
         const res = await db.select().from(promptsTable).orderBy(desc(promptsTable.timestamp)).limit(1)
         if (res.length === 0)
             return {
                 content: MainPromptService.baseSystemPrompt,
                 id: 0,
                 parentId: null,
-                timestamp: new Date()
+                timestamp: new Date(),
+                character: character.id
             }
 
         return res[0]
     }
 
     @ThrowsPromptServiceError
-    public static async generatePromptFromUnusedMessages(chat_uuid: string): Promise<Prompt | null> {
-        const messages = await DatabaseMessageStorageService.getUnusedMessages(chat_uuid)
+    public static async generatePromptFromUnusedMessages(chat: Chat): Promise<Prompt | null> {
+        const messages = await DatabaseMessageStorageService.getUnusedMessages(chat)
         if (messages.length === 0)
             return null
 
         const messagesText = messages.map(msg => msg.content).join('<FIM DA MENSAGEM>\n\n')
-        const currentPrompt = await MainPromptService.getLatestPrompt()
+        const services = getServices()
+        const character = await services.CharacterService.getById(chat.characterId)
+        if (!character)
+            throw new PromptServiceError()
+        const currentPrompt = await MainPromptService.getLatestPrompt(character)
 
         const mergePrompt = MainPromptService.mergePrompt[0] 
             + currentPrompt.content
@@ -67,9 +76,11 @@ export default abstract class MainPromptService {
         const newPromptInsert: typeof promptsTable.$inferInsert = {
             content: newPromptext,
             parentId: currentPrompt.id === 0 ? null : currentPrompt.id,
+            character: character.id
         }
 
         const newPrompt = await db.insert(promptsTable).values(newPromptInsert).returning()
+        void messages.map(msg => services.MessageStorageService.markMessageAsIncluded(msg.id))
         return newPrompt[0]
     }
 }
