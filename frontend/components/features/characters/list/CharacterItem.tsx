@@ -1,6 +1,6 @@
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
 import { Character } from "@/types/character";
-import { PlusIcon } from "lucide-react";
+import { MessageSquareText } from "lucide-react";
 
 type CharacterItemProps = {
     character: Character
@@ -15,8 +15,8 @@ export default function CharacterItem({ character }: CharacterItemProps) {
                 <ItemDescription>{character.description}</ItemDescription>
             </ItemContent>
             <ItemActions>
-                <button type="button" className="p-1 rounded-xl hover:bg-tertiary cursor-pointer">
-                    <PlusIcon />
+                <button type="button" className="p-2 rounded-xl hover:bg-tertiary cursor-pointer">
+                    <MessageSquareText className="size-6" />
                 </button>
             </ItemActions>
         </Item>
