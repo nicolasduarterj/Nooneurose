@@ -10,7 +10,11 @@ import { Character } from "@/types/character";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 async function getCharacters(characterName: string): Promise<Array<Character>> {
-    const res = await fetch(`${API_BASE}/api/character/search/${characterName}`);
+    // Solução temporaria por rota nao aceitar parametros vazios
+    if (characterName === "")
+        characterName = "%";
+    const encodedCharacterName = encodeURIComponent(characterName);
+    const res = await fetch(`${API_BASE}/api/character/search/${encodedCharacterName}`);
 
     if (!res.ok)
         throw new Error(`Erro ao buscar personagens: ${res.status}`);
