@@ -1,12 +1,46 @@
 "use client"
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import CharacterCreateForm from "./CharacterCreateForm";
+import CharacterCreateForm, { CharacterFormState } from "./CharacterCreateForm";
 import { useState } from "react";
+import { Plus } from "lucide-react";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export default function CharacterCreateDialog() {
     const [open, setOpen] = useState(false);
+    const [formState, setFormState] = useState<CharacterFormState>({
+        name: "",
+        description: "",
+    });
+
+    const handleSubmit = async () => {
+        try {
+            const accessToken = localStorage.getItem("acessToken");
+
+            const requestBody = {
+                name: formState.name,
+                description: formState.description
+            };
+
+            const res = await fetch(`${API_BASE}/api/character`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!res.ok)
+                throw new Error(`Erro ao criar personagem: ${res.status}`);
+
+            setOpen(false);
+        }
+        catch (error) {
+            console.error("Erro ao criar personagem:", error);
+        }
+    }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -23,7 +57,10 @@ export default function CharacterCreateDialog() {
                     <DialogDescription>Preencha o formulário para criar seu personagem</DialogDescription>
                 </DialogHeader>
 
-                <CharacterCreateForm onSubmitMessage={() => { setOpen(false) }} />
+                <CharacterCreateForm
+                    formState={formState}
+                    onChange={setFormState}
+                    onSubmitMessage={handleSubmit} />
             </DialogContent>
         </Dialog>
     )

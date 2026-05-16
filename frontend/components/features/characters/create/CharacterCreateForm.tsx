@@ -4,32 +4,37 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Form from "next/form";
 
+export type CharacterFormState = {
+    name: string;
+    description: string;
+}
+
 type CharacterCreateFormProps = {
+    formState: CharacterFormState;
+    onChange: (newValue: CharacterFormState) => void;
     onSubmitMessage: () => Promise<void> | void;
 }
 
-export default function CharacterCreateForm({ onSubmitMessage }: CharacterCreateFormProps) {
-    const handleSubmit = async () => {
-        console.log("Salvando personagem")
-
-        await onSubmitMessage()
-    }
-
+export default function CharacterCreateForm({ formState, onChange, onSubmitMessage }: CharacterCreateFormProps) {
     return (
-        <Form action={handleSubmit}>
+        <Form action={onSubmitMessage}>
             <FieldGroup>
                 <Field>
                     <FieldLabel>Nome</FieldLabel>
                     <Input
                         name="name"
                         type="text"
-                        autoComplete="off" />
+                        autoComplete="off"
+                        value={formState.name}
+                        onChange={(event) => onChange({ ...formState, name: event.target.value })} />
                 </Field>
                 <Field>
                     <FieldLabel>Descrição</FieldLabel>
                     <Textarea
                         name="description"
-                        autoComplete="off">
+                        autoComplete="off"
+                        value={formState.description}
+                        onChange={(event) => onChange({ ...formState, description: event.target.value })}>
                     </Textarea>
                 </Field>
                 <Field>
