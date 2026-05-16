@@ -147,7 +147,6 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  transform: translateY(-25vh);
 
   background:
     radial-gradient(
@@ -164,30 +163,23 @@ body {
 }
 
 .chat-mesh-gradient {
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   background:
     radial-gradient(
-      ellipse 65% 75% at 12% 12%,
-      rgba(255, 0, 122, 0.28) 0%,
-      rgba(255, 0, 122, 0.16) 28%,
-      transparent 68%
+      ellipse 75% 75% at 5% 5%,
+      rgba(255, 0, 122, 0.25) 0%,
+      rgba(255, 0, 122, 0) 40%,
+      transparent 50%
     ),
     radial-gradient(
-      ellipse 70% 80% at 88% 88%,
-      rgba(255, 0, 122, 0.28) 0%,
-      rgba(255, 0, 122, 0.16) 28%,
-      transparent 68%
-    ),
-    radial-gradient(
-      ellipse 72% 72% at 50% 50%,
-      rgba(0, 0, 0, 0.72) 0%,
-      rgba(0, 0, 0, 0.36) 45%,
-      rgba(0, 0, 0, 0.08) 72%,
-      transparent 100%
-    );
+      ellipse 75% 75% at 95% 95%,
+      rgba(255, 0, 122, 0.25) 0%,
+      rgba(255, 0, 122, 0) 40%,
+      transparent 50%
+    )  
 }
 
 /* Animação de surgimento do conteúdo */
