@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { Message } from "@/app/types/message";
-import ChatMessage from "@/components/ChatMessage";
+import { Message } from "@/types/message";
+import ChatMessage from "@/components/features/chat/ChatMessage";
 
 type ChatMessageListProps = {
     messages: Array<Message>;
