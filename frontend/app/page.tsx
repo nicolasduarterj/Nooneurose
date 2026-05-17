@@ -3,31 +3,55 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Phase } from '@/types/phase'
+import { API_BASE } from "@/lib/api";
 
 export default function Home() {
-  const [phase, setPhase] = useState<Phase>('black');
   const router = useRouter();
 
-  useEffect(() => {
-    const t1 = setTimeout(() => setPhase('fadein'), 120);
-    const t2 = setTimeout(() => setPhase('idle'), 1400);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, []);
-
-  const handleLoginClick = () => {
-    if (phase !== 'idle') return;
-    setTimeout(() => setPhase('leaving'), 800);
-    setTimeout(() => router.push('chat'), 1250);
-  };
-
-  const handleRegisterClick = () => {
-    if (phase !== 'idle') return;
-    setTimeout(() => setPhase('leaving'), 800);
-    setTimeout(() => router.push('cadastro'), 1250);
-  }
+  const [phase, setPhase] = useState<Phase>('black');
 
   const isVisible = phase !== 'black';
   const isLeaving = phase === 'leaving';
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const handleLoginClick = async () => {
+    if (phase !== 'idle') return;
+    
+    const res = await fetch(`${API_BASE}/api/user/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) {
+      setLoginError('Email ou senha incorretos.');
+      return;
+    }
+
+    const data = await res.json(); 
+
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('name', data.name);
+
+    setTimeout(() => setPhase('leaving'), 800);
+    setTimeout(() => router.push('/chat'), 1250);
+  };
+
+    useEffect(() => {
+      const t1 = setTimeout(() => setPhase('fadein'), 120);
+      const t2 = setTimeout(() => setPhase('idle'), 1400);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }, []);
+
+    const handleRegisterClick = () => {
+      if (phase !== 'idle') return;
+      setTimeout(() => setPhase('leaving'), 800);
+      setTimeout(() => router.push('cadastro'), 1250);
+    }
+
 
 
 
@@ -63,7 +87,8 @@ export default function Home() {
           </h1>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <input className="rounded-2xl p-5 flex items-center justify-center"
+          <input 
+            className="rounded-2xl p-5 flex items-center justify-center"
             style={{
               background: 'rgba(255, 0, 122, 0.08)',
               border: '1px solid rgba(255, 0, 122, 0.18)',
@@ -71,8 +96,11 @@ export default function Home() {
               height: 50,
             }}
             type="text"
-            name="username"
-            placeholder="Nome de usuário" />
+            name="email"
+            placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            />
 
           <input className="rounded-2xl p-5 flex items-center justify-center"
             style={{
@@ -83,13 +111,16 @@ export default function Home() {
             }}
             type="password"
             name="password"
-            placeholder="Senha" />
-
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            />
+          {loginError && <p className="text-sm text-red-500">{loginError}</p>}
           <div className={"flex flex-col items-center gap-10 w-full mt-2"}>
             <button className={"rounded-2xl p-5 flex items-center justify-center cursor-pointer"}
               style={{
-                backgroundColor: '#ca0062d8',
-                border: '1px solid rgba(255, 0, 122, 0.18)',
+                backgroundColor: '#FF007A',
+                border: '1px solid rgb(255, 0, 123)',
                 width: 200,
                 height: 50,
               }}
@@ -98,11 +129,10 @@ export default function Home() {
             </button>
             <button className={"rounded-2xl p-5 flex items-center justify-center cursor-pointer"}
               style={{
-                backgroundColor: '#ffffffd7',
-                border: '2px solid #ca0062d8',
+                border: '2px solid #FF007A',
                 width: 200,
                 height: 50,
-                color: '#dd006b',
+                color: '#ffffff',
               }}
               onClick={handleRegisterClick}>
               Criar nova conta
