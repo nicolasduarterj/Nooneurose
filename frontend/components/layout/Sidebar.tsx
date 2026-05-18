@@ -19,8 +19,6 @@ export default function Sidebar() {
                     headers: authHeaders(),
                 });
 
-                console.log("Resposta da API:", res);
-
                 if (!res.ok)
                     throw new Error(`Erro ao buscar chats: ${res.status}`);
 
