@@ -32,8 +32,7 @@ userRouter.post(APIPaths.User._(), async function(req: Req, res: Res) {
         res.json(user)
     } catch (error) {
         if (error instanceof UserServiceError) {
-            res.json({ error: 'User already exists.' })
-            return
+            throw new RouteError(400, 'user already exists')
         } else {
             throw error
         }
