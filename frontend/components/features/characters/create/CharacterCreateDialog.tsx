@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import CharacterCreateForm, { CharacterFormState } from "./CharacterCreateForm";
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { authHeaders } from "@/lib/api";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -16,8 +17,6 @@ export default function CharacterCreateDialog() {
 
     const handleSubmit = async () => {
         try {
-            const accessToken = localStorage.getItem("acessToken");
-
             const requestBody = {
                 name: formState.name,
                 description: formState.description
@@ -25,10 +24,7 @@ export default function CharacterCreateDialog() {
 
             const res = await fetch(`${API_BASE}/api/character`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`
-                },
+                headers: authHeaders(),
                 body: JSON.stringify(requestBody)
             });
 
