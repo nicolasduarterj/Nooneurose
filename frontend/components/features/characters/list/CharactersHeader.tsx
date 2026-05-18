@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import CharacterCreateDialog from "../create/CharacterCreateDialog";
 
 export function CharactersHeader() {
     return (
@@ -12,11 +12,7 @@ export function CharactersHeader() {
                     className="bg-primary/50 px-8 py-1 rounded-lg text-neutral/80 hover:bg-primary/70 cursor-pointer">
                     Meus personagens
                 </button>
-                <button
-                    type="button"
-                    className="bg-primary/50 px-1 py-1 rounded-lg text-neutral/80 hover:bg-primary/70 cursor-pointer">
-                    <Plus />
-                </button>
+                <CharacterCreateDialog />
             </div>
         </div>
     )
