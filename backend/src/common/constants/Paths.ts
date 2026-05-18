@@ -17,7 +17,7 @@ const Paths = {
                 Messages: '/messages'
             }
         },
-        Characters: 'characters'
+        Characters: '/characters'
     },
     Character: {
         _: '/character',
