@@ -14,7 +14,7 @@ export default function MyCharacterPage() {
         const fetchCharacters = async () => {
             setIsLoading(true);
             try {
-                const res = await fetch(`${API_BASE}/api/usercharacters`, {
+                const res = await fetch(`${API_BASE}/api/user/characters`, {
                     method: "GET",
                     headers: authHeaders(),
                 });
