@@ -1,3 +1,5 @@
+'use client';
+
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
 import { Character } from "@/types/character";
 import { MessageSquareText } from "lucide-react";
