@@ -44,7 +44,6 @@ export default function Chat({ params }: PageProps) {
                 if (!res.ok) throw new Error(`Erro ao buscar histórico: ${res.status}`);
 
                 const history: Array<Message> = await res.json();
-                console.log("Histórico carregado:", history);
                 setMessages(history);
             } catch (error) {
                 console.error("Falha ao carregar histórico:", error);
