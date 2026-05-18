@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input"
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE } from "@/lib/api";
 
 export function SignupForm({ className,...props }: React.ComponentProps<"div">) {
    const router = useRouter();
@@ -53,7 +54,7 @@ export function SignupForm({ className,...props }: React.ComponentProps<"div">) 
       return '';
    };
 
-   const handleSubmit = (e: React.FormEvent) => {
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const emailErro = validateEmail(email);
@@ -66,28 +67,39 @@ export function SignupForm({ className,...props }: React.ComponentProps<"div">) 
 
     if (emailErro || passwordErro || confirmPasswordErro) return;
 
-    // confirmação mock para teste
-    setShowSuccess(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/user`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name, password }),
+      });
+
+      if (!res.ok) throw new Error('Erro ao criar conta');
+
+      setShowSuccess(true);
+
+    } catch (err) {
+      setEmailError('Erro ao criar conta. Tente novamente.')
+    }
    };
   
   if (showSuccess){
     return (
       <div className={cn("flex flex-col gap-6", className)} {...props}>
         <Alert className="flex items-center justify-between gap-4">
-  <div className="flex items-start gap-3">
-    <CheckCircle2Icon className="h-5 w-5 mt-0.5" />
-      <div>
-        <AlertTitle>Conta criada com sucesso!</AlertTitle>
-          <AlertDescription>
-            Agora você pode fazer login com suas credenciais.
-          </AlertDescription>
-      </div>
-  </div>
-  <Button className="shrink-0" onClick={() => router.push('/')}>
-    OK
-  </Button>
-</Alert>
-
+          <div className="flex items-start gap-3">
+            <CheckCircle2Icon className="h-5 w-5 mt-0.5" />
+              <div>
+                <AlertTitle>Conta criada com sucesso!</AlertTitle>
+                  <AlertDescription>
+                    Agora você pode fazer login com suas credenciais.
+                  </AlertDescription>
+              </div>
+          </div>
+          <Button className="shrink-0" onClick={() => router.push('/')}>
+          OK
+          </Button>
+        </Alert>
       </div>
     );
   } 
@@ -106,7 +118,13 @@ export function SignupForm({ className,...props }: React.ComponentProps<"div">) 
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="name">Como você quer ser chamado?</FieldLabel>
-                <Input id="name" type="text" placeholder="Insira o seu nome" required />
+                <Input 
+                  id="name" 
+                  type="text" 
+                  placeholder="Insira o seu nome" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)}
+                />
               </Field>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -144,13 +162,12 @@ export function SignupForm({ className,...props }: React.ComponentProps<"div">) 
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      onBlur={() => setPasswordError(validatePasswordMatch(password, confirmPassword))}
+                      onBlur={() => setConfirmPasswordError(validatePasswordMatch(password, confirmPassword))}
                     />
-                    {setConfirmPasswordError && <p className="text-sm text-red-500">{confirmPasswordError}</p>}
+                    {confirmPasswordError && <p className="text-sm text-red-500">{confirmPasswordError}</p>}
                   </Field>
                 </Field>
                 <Button type="submit">Criar Conta</Button>
-        
                   <FieldDescription className="text-center">
                     Você já possui uma conta? <a href="/">Faça Login</a>
                   </FieldDescription>

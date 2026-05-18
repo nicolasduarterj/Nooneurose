@@ -10,7 +10,23 @@ type ChatMessageListProps = {
 
 export default function ChatMessageList({ messages }: ChatMessageListProps) {
     const sortedMessages = useMemo(() => {
-        return messages.slice().reverse();
+        return messages.slice().sort((a, b) => {
+            const tempA = new Date(a.timestamp).getTime();
+            const tempB = new Date(b.timestamp).getTime();
+            const diff = tempB - tempA;
+
+            if (diff !== 0) {
+                return diff;
+            }
+
+            if (a.source === "assistant" && b.source === "user")
+                return -1
+
+            if (a.source === "user" && b.source === "assistant")
+                return 1
+
+            return 0
+        });
     }, [messages]);
 
     return (
