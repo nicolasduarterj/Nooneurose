@@ -5,10 +5,13 @@ import CharacterCreateForm, { CharacterFormState } from "./CharacterCreateForm";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { authHeaders } from "@/lib/api";
+import { Character } from "@/types/character";
+import { useRouter } from "next/navigation";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export default function CharacterCreateDialog() {
+    const router = useRouter();
     const [open, setOpen] = useState(false);
     const [formState, setFormState] = useState<CharacterFormState>({
         name: "",
@@ -31,7 +34,10 @@ export default function CharacterCreateDialog() {
             if (!res.ok)
                 throw new Error(`Erro ao criar personagem: ${res.status}`);
 
+            const character: Character = await res.json();
+
             setOpen(false);
+            router.push(`/characters/${character.id}`);
         }
         catch (error) {
             console.error("Erro ao criar personagem:", error);
