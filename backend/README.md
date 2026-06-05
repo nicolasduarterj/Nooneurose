@@ -80,7 +80,7 @@ GET:
         imageURL: string | null
     }
 ```
-PUT:
+PATCH:
     Altera um personagem
     Estrutura do request: {
         name?: string

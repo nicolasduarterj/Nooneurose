@@ -45,7 +45,7 @@ characterRouter.get(APIPaths.Character.Search(), async function(req: Req, res: R
     res.json(match)
 })
 
-characterRouter.put(APIPaths.Character.ById(), authorize, async function(req: Req, res: Res) {
+characterRouter.patch(APIPaths.Character.ById(), authorize, async function(req: Req, res: Res) {
     if(!req.user)
         throw new RouteError(500, 'error missing user')
 
