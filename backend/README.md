@@ -39,8 +39,19 @@ POST:
         token: string, //Armazenem no local storage
         name: string
     }
+```
 
-OBS: Para todos os pedidos abaixo, insira a string "Bearer <TOKEN DA RESPOSTA>" como valor do header Authorization
+### /api/user/byId/:id
+
+GET: Obtém as informações de um usuário.
+
+    Estrutura da resposta: {
+        id: number
+        name: string
+        email: string
+    }
+
+OBS: Para todos os pedidos abaixo, insira a string "Bearer \<TOKEN DA RESPOSTA\>" como valor do header Authorization
 ```
 
 ### /api/character

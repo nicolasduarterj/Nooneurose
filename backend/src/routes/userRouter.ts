@@ -59,6 +59,20 @@ userRouter.post(APIPaths.User.Login(), async function(req: Req, res: Res) {
     res.json({ token: token })
 })
 
+userRouter.get(APIPaths.User.byId(), async function(req: Req, res: Res) {
+    const id = parseInt(req.params.id)
+    if (Number.isNaN(id))
+        throw new RouteError(400, 'Invalid id')
+
+    const services = getServices()
+    const user = await services.UserService.getById(id)
+
+    if (!user)
+        throw new RouteError(404, 'User not found')
+
+    res.json({ ...user, password: undefined })
+})
+
 userRouter.get(APIPaths.User.Characters(), authorize, async function(req: Req, res: Res) {
     const services = getServices()
 
