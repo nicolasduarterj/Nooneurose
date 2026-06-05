@@ -45,7 +45,7 @@ characterRouter.get(APIPaths.Character.Search(), async function(req: Req, res: R
     res.json(match)
 })
 
-characterRouter.put(APIPaths.Character.Update(), authorize, async function(req: Req, res: Res) {
+characterRouter.put(APIPaths.Character.ById(), authorize, async function(req: Req, res: Res) {
     if(!req.user)
         throw new RouteError(500, 'error missing user')
 
@@ -68,14 +68,14 @@ characterRouter.put(APIPaths.Character.Update(), authorize, async function(req: 
     if (body['name'] !== undefined) {
         if (typeof body['name'] !== 'string')
             throw new RouteError(400, 'invalid name')
-        
+
         updateData.name = body['name']
     }
 
     if (body['description'] !== undefined) {
         if (typeof body['description'] !== 'string')
             throw new RouteError(400, 'invalid description')
-        
+
         updateData.description = body['description']
     }
 
@@ -104,7 +104,6 @@ characterRouter.put(APIPaths.Character.Update(), authorize, async function(req: 
         throw new RouteError(400, 'no valid fields to update')
     }
 
-    
     const updatedCharacter = await services.CharacterService.update(id, updateData)
 
     if (!updatedCharacter) {

@@ -23,7 +23,6 @@ const Paths = {
         _: '/character',
         ById: '/byId/:id',
         Search: '/search/:query',
-        Update: '/:id'
     }
 } as const;
 
