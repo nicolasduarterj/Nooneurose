@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Phase } from '@/types/phase'
-import { API_BASE } from "@/lib/api";
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
   const router = useRouter();
+  const { login } = useAuth();
 
   const [phase, setPhase] = useState<Phase>('black');
 
@@ -18,26 +19,20 @@ export default function Home() {
   const [loginError, setLoginError] = useState('');
 
   const handleLoginClick = async () => {
-    if (phase !== 'idle') return;
-    
-    const res = await fetch(`${API_BASE}/api/user/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
 
-    if (!res.ok) {
-      setLoginError('Email ou senha incorretos.');
-      return;
+    const onLoginSuccess = () => {
+      setTimeout(() => setPhase('leaving'), 800);
+      setTimeout(() => router.push('/chat'), 1250);
     }
 
-    const data = await res.json(); 
+    if (phase !== 'idle') return;
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('name', data.name);
-
-    setTimeout(() => setPhase('leaving'), 800);
-    setTimeout(() => router.push('/chat'), 1250);
+    try{
+      await login({ email, password }, onLoginSuccess);
+    }
+    catch(error){
+      setLoginError(error instanceof Error ? error.message : 'Falha ao realizar login');
+    }
   };
 
     useEffect(() => {

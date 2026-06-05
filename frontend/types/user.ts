@@ -9,3 +9,13 @@ export type CreateUserResponse = {
   email: string;
   password: string;
 };
+
+export type DoLoginRequest = {
+  email: string;
+  password: string;
+};
+
+export type LoggedUser = {
+  id: number;
+  name: string;
+};
