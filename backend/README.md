@@ -42,15 +42,16 @@ POST:
 ```
 
 ### /api/user/byId/:id
-Obtém as informações de um usuário.
-GET:
+
+GET: Obtém as informações de um usuário.
+
     Estrutura da resposta: {
         id: number
         name: string
         email: string
     }
 
-OBS: Para todos os pedidos abaixo, insira a string "Bearer <TOKEN DA RESPOSTA>" como valor do header Authorization
+OBS: Para todos os pedidos abaixo, insira a string "Bearer \<TOKEN DA RESPOSTA\>" como valor do header Authorization
 ```
 
 ### /api/character
