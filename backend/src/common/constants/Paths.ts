@@ -22,7 +22,7 @@ const Paths = {
     Character: {
         _: '/character',
         ById: '/byId/:id',
-        Search: '/search/:query'
+        Search: '/search/:query',
     }
 } as const;
 

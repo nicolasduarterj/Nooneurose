@@ -80,6 +80,16 @@ GET:
         imageURL: string | null
     }
 ```
+PATCH:
+    Altera um personagem
+    Estrutura do request: {
+        name?: string
+        description?: string
+        isGloballyChangeable?: boolean
+        isPrivatelyChangeable?: boolean
+        imageURL?: string | null
+    }
+    Estrutura da resposta: ver resposta do POST
 
 ### /api/character/search/:query
 ```

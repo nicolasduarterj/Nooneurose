@@ -1,5 +1,6 @@
 import Character from "@src/models/common/Character"
 import User from "@src/models/common/User"
+import { UpdateCharacterData } from "./ICharacterService"
 
 export default abstract class LocalCharacterService {
     private static characterStore: Character[] = []
@@ -35,5 +36,30 @@ export default abstract class LocalCharacterService {
     public static async queryByName(targetName: string): Promise<Character[]> {
         const regex = new RegExp(`.*${targetName}.*`)
         return this.characterStore.filter(char => regex.test(char.name))
+    }
+
+    //eslint-disable-next-line
+    public static async update(id: number, data: UpdateCharacterData): Promise<Character | null> {
+        const character = this.characterStore.find(char => char.id === id)
+
+        if (!character)
+            return null
+
+        if (data.name !== undefined)
+            character.name = data.name
+
+        if (data.description !== undefined)
+            character.description = data.description
+
+        if (data.imageURL !== undefined)
+            character.imageURL = data.imageURL
+
+        if (data.isGloballyChangeable !== undefined)
+            character.isGloballyChangeable = data.isGloballyChangeable
+
+        if (data.isPrivatelyChangeable !== undefined)
+            character.isPrivatelyChangeable = data.isPrivatelyChangeable
+
+        return character
     }
 }

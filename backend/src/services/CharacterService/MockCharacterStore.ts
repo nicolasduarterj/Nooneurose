@@ -1,5 +1,6 @@
 import Character from "@src/models/common/Character";
 import User from "@src/models/common/User";
+import { UpdateCharacterData } from "./ICharacterService";
 
 export default abstract class MockCharacterService {
     private static mockChar: Character = {
@@ -26,9 +27,19 @@ export default abstract class MockCharacterService {
     public static async getByUser(user: User): Promise<Character[]> {
         return [this.mockChar]
     }
-    
+
     //eslint-disable-next-line
     public static async queryByName(targetName: string): Promise<Character[]> {
         return [this.mockChar]
+    }
+
+    //eslint-disable-next-line
+    public static async update(id: number, data: UpdateCharacterData): Promise<Character> {
+        return this.mockChar = {
+            ...this.mockChar,
+            ...data,
+            id: this.mockChar.id,
+            ownerId: this.mockChar.ownerId,
+        }
     }
 }
