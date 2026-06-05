@@ -3,6 +3,7 @@ import { charactersTable } from "@src/db/schema"
 import db from "@src/db/db"
 import User from "@src/models/common/User"
 import { eq, ilike } from "drizzle-orm"
+import { UpdateCharacterData } from "./ICharacterService"
 
 export default abstract class MainCharacterService {
     public static async create(name: string, description: string, owner: User): Promise<Character> {
@@ -34,5 +35,12 @@ export default abstract class MainCharacterService {
             .where(ilike(charactersTable.name, `%${targetName}%`))
 
         return res
+    }
+
+    public static async update(id: number, data: UpdateCharacterData): Promise<Character | null> {
+        const res = await db.update(charactersTable).set(data).where(eq(charactersTable.id, id)).returning()
+        if (res.length < 1)
+            return null
+        return res[0]
     }
 }
