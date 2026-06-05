@@ -39,9 +39,18 @@ POST:
         token: string, //Armazenem no local storage
         name: string
     }
-
-OBS: Para todos os pedidos abaixo, insira a string "Bearer <TOKEN DA RESPOSTA>" como valor do header Authorization
 ```
+
+### /api/user/byId/:id
+GET: Obtém as informações de um usuário.
+
+    Estrutura da resposta: {
+        id: number
+        name: string
+        email: string
+    }
+
+OBS: Para todos os pedidos abaixo, insira a string "Bearer \<TOKEN DA RESPOSTA\>" como valor do header Authorization
 
 ### /api/character
 Gerenciamento de personagens
@@ -79,7 +88,7 @@ GET:
         ownerId: number
         imageURL: string | null
     }
-```
+
 PATCH:
     Altera um personagem
     Estrutura do request: {
@@ -91,9 +100,12 @@ PATCH:
     }
     Estrutura da resposta: ver resposta do POST
 
-### /api/character/search/:query
 ```
+
+### /api/character/search/:query
+
 GET:
+
     Procura por personagens pelo nome
     Estrutura da resposta: {
         id: number
@@ -110,6 +122,7 @@ GET:
 Gerencia chats do usuário
 ```
 POST:
+
     Cria um chat
     Content-Type: application/json
 
@@ -124,6 +137,7 @@ POST:
     }
 
 GET:
+
     Retorna todos os chats do usuário
 
     Estrutura da resposta: {
@@ -131,11 +145,11 @@ GET:
         ownerId: number
         characterId: number
     }[]
-```
 
 ### /api/user/chats/:id
 ```
 GET:
+
     Retorna os detalhes do chat
 
     Estrutura da resposta: {
@@ -148,6 +162,7 @@ GET:
 ### /api/user/chats/:id/messages
 ```
 GET:
+
     Retorna todas as mensagens do chat
 
     Estrutura da resposta: {
@@ -158,11 +173,11 @@ GET:
         source: 'assistant' | 'user'
         timestamp: Date
     }
-```
 
 ### /api/user/characters
-```
+
 GET:
+
     Retorna todos os personagens do usuário
     Estrutura da resposta: {
         id: number
@@ -174,11 +189,11 @@ GET:
         imageURL: string | null
     }
 ```
-
 ### /api/ai/send
-Envia uma mensagem para a IA
-```
-POST:
+
+    Envia uma mensagem para a IA
+
+    POST:
     Content-Type: application/json
 
     Estrutura do body: {
@@ -191,4 +206,3 @@ POST:
     }
 
     Erros: 400 (parâmetros faltando), 500 (problema com o provedor de IA)
-```
