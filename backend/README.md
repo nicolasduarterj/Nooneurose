@@ -116,7 +116,6 @@ GET:
         ownerId: number
         imageURL: string | null
     }
-```
 
 ### /api/user/chats
 Gerencia chats do usuário
@@ -145,10 +144,9 @@ GET:
         ownerId: number
         characterId: number
     }[]
-
-### /api/user/chats/:id
 ```
-GET:
+### /api/user/chats/:id
+    GET:
 
     Retorna os detalhes do chat
 
@@ -157,10 +155,9 @@ GET:
         ownerId: number
         characterId: number
     }
-```
 
 ### /api/user/chats/:id/messages
-```
+
 GET:
 
     Retorna todas as mensagens do chat
