@@ -7,6 +7,7 @@ export default interface ICharacterService {
     getByUser(user: User): Promise<Character[]>
     queryByName(targetName: string): Promise<Character[]>
     update(id: number, data: UpdateCharacterData): Promise<Character | null>
+    createDerived(base: Character, newOwner: User): Promise<Character>
 }
 
 export type UpdateCharacterData = {

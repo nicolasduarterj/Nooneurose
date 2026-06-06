@@ -62,4 +62,11 @@ export default abstract class LocalCharacterService {
 
         return character
     }
+
+    //eslint-disable-next-line
+    public static async createDerived(base: Character, newOwner: User): Promise<Character> {
+        const clone: Character = { ...base, ownerId: newOwner.id, id: ++this.nextId }
+        this.characterStore.push(clone)
+        return clone
+    }
 }

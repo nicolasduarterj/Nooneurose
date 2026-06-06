@@ -1,9 +1,10 @@
 import Character from "@src/models/common/Character"
-import { charactersTable } from "@src/db/schema"
+import { charactersTable, promptsTable } from "@src/db/schema"
 import db from "@src/db/db"
 import User from "@src/models/common/User"
 import { eq, ilike } from "drizzle-orm"
 import { UpdateCharacterData } from "./ICharacterService"
+import { getServices } from "../Services"
 
 export default abstract class MainCharacterService {
     public static async create(name: string, description: string, owner: User): Promise<Character> {
@@ -42,5 +43,26 @@ export default abstract class MainCharacterService {
         if (res.length < 1)
             return null
         return res[0]
+    }
+
+    public static async createDerived(base: Character, newOwner: User): Promise<Character> {
+        const services = getServices()
+        const res = await db.insert(charactersTable).values({
+            name: base.name,
+            description: base.description,
+            ownerId: newOwner.id,
+            isGloballyChangeable: true,
+            isPrivatelyChangeable: true,
+            imageURL: base.imageURL
+        }).returning()
+
+        const character = res[0]
+        const latestBasePrompt = await services.PromptService.getLatestPrompt(base)
+        await db.insert(promptsTable).values({
+            ...latestBasePrompt,
+            character: character.id
+        })
+
+        return character
     }
 }
