@@ -11,6 +11,7 @@ const Paths = {
         _: '/user',
         Login: '/login',
         byId: '/byId/:id',
+        search: '/search/:query',
         Chats: {
             _: '/chats',
             ChatId: {

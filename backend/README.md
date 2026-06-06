@@ -38,6 +38,18 @@ PATCH:
     }
 ```
 
+### /api/user/search/:query
+```
+GET:
+    Procura por usuários pelo nome
+
+    Estrutura da resposta: {
+        id: number,
+        name: string,
+        email: string,
+    }
+```
+
 ### /api/user/login
 ```
 POST:

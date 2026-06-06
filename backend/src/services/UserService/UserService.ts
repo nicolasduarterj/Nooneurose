@@ -5,6 +5,7 @@ export default interface IUserService {
     authenticateAndRetrieve(email: string, password: string): Promise<User | null>
     getById(id: number): Promise<User | null>
     update(user: User, change: UpdateUserData): Promise<User>
+    search(query: string): Promise<User[]>
 }
 
 export interface UpdateUserData {
