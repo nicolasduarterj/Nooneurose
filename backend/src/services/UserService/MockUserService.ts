@@ -1,4 +1,5 @@
 import User from "@src/models/common/User"
+import { UpdateUserData } from "./UserService"
 
 export default abstract class MockUserService {
 
@@ -21,6 +22,11 @@ export default abstract class MockUserService {
 
     // eslint-disable-next-line
     public static async getById(id: number): Promise<User | null> {
+        return MockUserService.mockUser
+    }
+
+    // eslint-disable-next-line
+    public static async update(user: User, change: UpdateUserData): Promise<User> {
         return MockUserService.mockUser
     }
 }

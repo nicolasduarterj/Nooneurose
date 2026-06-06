@@ -4,4 +4,10 @@ export default interface IUserService {
     create(email: string, password: string, name: string): Promise<User>
     authenticateAndRetrieve(email: string, password: string): Promise<User | null>
     getById(id: number): Promise<User | null>
+    update(user: User, change: UpdateUserData): Promise<User>
+}
+
+export interface UpdateUserData {
+    name?: string
+    password?: string
 }
