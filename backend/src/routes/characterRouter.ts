@@ -112,4 +112,20 @@ characterRouter.patch(APIPaths.Character.ById(), authorize, async function(req: 
     res.json(updatedCharacter)
 })
 
+characterRouter.get(APIPaths.Character.ByOwner(), async function(req: Req, res: Res) {
+    const userId = Number.parseInt(req.params.userId)
+
+    if (Number.isNaN(userId))
+        throw new RouteError(400, 'id must be a number')
+
+    const services = getServices()
+    const user = await services.UserService.getById(userId)
+
+    if (!user)
+        throw new RouteError(404, 'user not found')
+
+    const chars = await services.CharacterService.getByUser(user)
+    res.json(chars)
+})
+
 export default characterRouter

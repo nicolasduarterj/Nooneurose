@@ -25,6 +25,7 @@ const Paths = {
         _: '/character',
         ById: '/byId/:id',
         Search: '/search/:query',
+        ByOwner: '/byUser/:userId'
     }
 } as const;
 

@@ -128,6 +128,22 @@ PATCH:
 
 ```
 
+### /api/character/byUser/:userId
+```
+GET:
+    Retorna personagens por usuário
+    Estrutura da resposta: {
+        id: number
+        name: string
+        description: string
+        isGloballyChangeable: boolean
+        isPrivatelyChangeable: boolean
+        ownerId: number
+        imageURL: string | null
+    }[]
+
+```
+
 ### /api/character/search/:query
 
 GET:
@@ -141,7 +157,7 @@ GET:
         isPrivatelyChangeable: boolean
         ownerId: number
         imageURL: string | null
-    }
+    }[]
 
 ### /api/user/chats
 Gerencia chats do usuário
