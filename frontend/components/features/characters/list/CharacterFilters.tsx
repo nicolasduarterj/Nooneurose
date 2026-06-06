@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { PopoverTrigger, PopoverContent, Popover } from "@/components/ui/popover";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export type CharacterFiltersState = {
     characterName: string;
@@ -14,16 +15,37 @@ export type CharacterFiltersState = {
 };
 
 type CharacterFiltersProps = {
+    tab: 'personagens' | 'criadores';
+    onTabChange: (tab: 'personagens' | 'criadores') => void;
     value: CharacterFiltersState;
     isLoading?: boolean;
     onChange: (newValue: CharacterFiltersState) => void;
     onSearch: () => Promise<void> | void;
 };
 
-export default function CharacterFilters({ value, isLoading, onChange, onSearch }: CharacterFiltersProps) {
+export default function CharacterFilters({ tab, onTabChange, value, isLoading, onChange, onSearch }: CharacterFiltersProps) {
     return (
         <div className="flex flex-col justify-between gap-3">
             <div className="flex w-full max-w-xl gap-2">
+                <ToggleGroup
+                    variant="outline"
+                    value={tab ? [tab] : undefined}
+                    onValueChange={(val) => { if (val && val[0]) onTabChange(val[0] as 'personagens' | 'criadores'); }}
+                    className="shrink-0 border border-primary/30 rounded-lg"
+                >
+                    <ToggleGroupItem
+                        value="personagens"
+                        className="text-neutral/50 data-[state=on]:bg-primary/50 data-[state=on]:text-neutral cursor-pointer"
+                    >
+                        Personagens
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        value="criadores"
+                        className="text-neutral/50 data-[state=on]:bg-primary/50 data-[state=on]:text-neutral cursor-pointer"
+                    >
+                        Criadores
+                    </ToggleGroupItem>
+                </ToggleGroup>
                 <Input
                     name="characterName"
                     value={value.characterName}
@@ -34,42 +56,43 @@ export default function CharacterFilters({ value, isLoading, onChange, onSearch 
                         }
                     }}
                     className="bg-tertiary/10 border-2 border-primary/30 rounded-lg text-md text-neutral/50 focus-visible:outline-primary focus-visible:ring-1 focus-visible:ring-primary/50 focus-visible:border-primary/50"
-                    placeholder="Buscar personagem..."
+                    placeholder={tab === 'personagens' ? 'Buscar personagem...' : 'Buscar criadores...'}
                 />
-                <div>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                                disabled={isLoading}
-                                className="shrink-0 bg-primary/50 text-neutral/80 hover:bg-primary/70 cursor-pointer">
-                                <SlidersHorizontal />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                            align="start"
-                            className="w-fit bg-tertiary text-neutral border border-neutral/50">
-                            <div>
-                                <div className="flex flex-row gap-2 p-2 items-center">
-                                    <Checkbox
-                                        checked={value.isGloballyChangeableSelected}
-                                        onCheckedChange={(checked) => onChange({ ...value, isGloballyChangeableSelected: !!checked })}
-                                        className="data-checked:bg-tertiary/40 data-checked:border-neutral/50"
-                                    />
-                                    <span>Edição global</span>
+                {tab === 'personagens' ? (
+                    <div>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    disabled={isLoading}
+                                    className="shrink-0 bg-primary/50 text-neutral/80 hover:bg-primary/70 cursor-pointer">
+                                    <SlidersHorizontal />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                align="start"
+                                className="w-fit bg-tertiary text-neutral border border-neutral/50">
+                                <div>
+                                    <div className="flex flex-row gap-2 p-2 items-center">
+                                        <Checkbox
+                                            checked={value.isGloballyChangeableSelected}
+                                            onCheckedChange={(checked) => onChange({ ...value, isGloballyChangeableSelected: !!checked })}
+                                            className="data-checked:bg-tertiary/40 data-checked:border-neutral/50"
+                                        />
+                                        <span>Edição global</span>
+                                    </div>
+                                    <div className="flex flex-row gap-2 p-2 items-center">
+                                        <Checkbox
+                                            checked={value.isPrivatelyChangeableSelected}
+                                            onCheckedChange={(checked) => onChange({ ...value, isPrivatelyChangeableSelected: !!checked })}
+                                            className="data-checked:bg-tertiary/40 data-checked:border-neutral/50"
+                                        />
+                                        <span>Edição restrita</span>
+                                    </div>
                                 </div>
-                                <div className="flex flex-row gap-2 p-2 items-center">
-                                    <Checkbox
-                                        checked={value.isPrivatelyChangeableSelected}
-                                        onCheckedChange={(checked) => onChange({ ...value, isPrivatelyChangeableSelected: !!checked })}
-                                        className="data-checked:bg-tertiary/40 data-checked:border-neutral/50"
-                                    />
-                                    <span>Edição restrita</span>
-                                </div>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-
-                </div>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                ) : null}
                 <Button
                     type="button"
                     onClick={onSearch}

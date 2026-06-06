@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const userName = cookies[APP_USER_NAME_COOKIE];
 
             if (token && userName) {
-                const payload = decodeJwt(token);
+                const payload = decodeJwt(token) as { id?: number; email?: string };
 
                 if (payload?.id) {
                     setLoggedUser({
@@ -92,6 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const authenticatedUser: LoggedUser = {
             id: tokenPayload?.id || 0,
             name: data.name,
+            email: email,
         };
 
         setLoggedUser(authenticatedUser);
