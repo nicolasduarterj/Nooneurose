@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CheckCircle2Icon } from "lucide-react"
+import { CheckCircle2Icon, Link } from "lucide-react"
 import {
   Card,
   CardContent,

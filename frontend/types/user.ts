@@ -19,3 +19,16 @@ export type LoggedUser = {
   id: number;
   name: string;
 };
+
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+export interface Creator {
+  id: number;
+  name: string;
+  email: string;
+  description?: string;
+}
