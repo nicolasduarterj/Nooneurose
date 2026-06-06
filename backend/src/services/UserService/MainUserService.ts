@@ -3,7 +3,8 @@ import { usersTable } from "@src/db/schema";
 import { ThrowsUserServiceError } from "@src/common/types/UserServiceError";
 import db from "@src/db/db";
 import bcrypt from 'bcrypt'
-import { eq } from "drizzle-orm";
+import { eq, ilike } from "drizzle-orm";
+import { UpdateUserData } from "./UserService";
 
 export default abstract class MainUserService {
 
@@ -44,5 +45,19 @@ export default abstract class MainUserService {
         }
 
         return candidates[0]
+    }
+
+    @ThrowsUserServiceError
+    public static async update(user: User, change: UpdateUserData): Promise<User> {
+        const processedPass = change.password ? await bcrypt.hash(change.password, 10) : undefined
+        const updatedChange: UpdateUserData = { ...change, password: processedPass }
+        const res = await db.update(usersTable).set(updatedChange).where(eq(usersTable.id, user.id)).returning()
+        return res[0]
+    }
+
+    @ThrowsUserServiceError
+    public static async search(query: string): Promise<User[]> {
+        const res = await db.select().from(usersTable).where(ilike(usersTable.name, `%${query}%`))
+        return res
     }
 }

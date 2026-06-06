@@ -8,6 +8,7 @@ import { APIPaths } from '@src/common/constants/Paths'
 import jwt from 'jsonwebtoken'
 import EnvVars from '@src/common/constants/env'
 import authorize from '@src/common/utils/middleware/authorize'
+import { UpdateUserData } from '@src/services/UserService/UserService'
 
 const userRouter = Router()
 
@@ -81,6 +82,34 @@ userRouter.get(APIPaths.User.Characters(), authorize, async function(req: Req, r
 
     const characters = await services.CharacterService.getByUser(req.user)
     res.json(characters)
+})
+
+userRouter.patch(APIPaths.User._(), authorize, async function(req: Req, res: Res) {
+    const services = getServices()
+
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const newPass = req.body.password
+    const newName = req.body.name
+
+    if (!newPass && !newName)
+        throw new RouteError(400, 'nothing to update')
+
+    const change: UpdateUserData = {
+        name: newName ? newName : undefined,
+        password: newPass ? newPass : undefined
+    }
+
+    const updatedUser = await services.UserService.update(req.user, change)
+    res.json({ ...updatedUser, password: undefined })
+})
+
+userRouter.get(APIPaths.User.search(), async function(req: Req, res: Res) {
+    const services = getServices()
+
+    const candidates = await services.UserService.search(req.params.query)
+    res.json(candidates.map(candidate => ({ ...candidate, password: undefined })))
 })
 
 export default userRouter

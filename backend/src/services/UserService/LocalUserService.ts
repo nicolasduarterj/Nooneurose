@@ -1,5 +1,6 @@
 import UserServiceError from "@src/common/types/UserServiceError"
 import User from "@src/models/common/User"
+import { UpdateUserData } from "./UserService"
 
 export default abstract class LocalUserService {
 
@@ -41,5 +42,19 @@ export default abstract class LocalUserService {
         const user = Array.from(this.userRepo).find(user => user.id === id)
 
         return user ?? null
+    }
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public static async update(user: User, change: UpdateUserData): Promise<User> {
+        const foundUser = Array.from(this.userRepo).find(candidate => candidate.id === user.id) as User
+        foundUser.name = change.name ?? foundUser.name
+        foundUser.password = change.password ?? foundUser.password
+        return foundUser
+    }
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public static async search(query: string): Promise<User[]> {
+        const candidates = Array.from(this.userRepo).filter(user => user.name.match(query) !== null)
+        return candidates
     }
 }

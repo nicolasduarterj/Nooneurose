@@ -22,6 +22,32 @@ POST:
         email: string,
         password: string //HASH
     }
+
+PATCH:
+    Atualiza o usuário logado; precisa de login.
+
+    Estrutura do body: {
+        name?: string,
+        password?: string
+    }
+
+    Estrutura da resposta: {
+        id: number,
+        name: string,
+        email: string,
+    }
+```
+
+### /api/user/search/:query
+```
+GET:
+    Procura por usuários pelo nome
+
+    Estrutura da resposta: {
+        id: number,
+        name: string,
+        email: string,
+    }
 ```
 
 ### /api/user/login
@@ -102,6 +128,22 @@ PATCH:
 
 ```
 
+### /api/character/byUser/:userId
+```
+GET:
+    Retorna personagens por usuário
+    Estrutura da resposta: {
+        id: number
+        name: string
+        description: string
+        isGloballyChangeable: boolean
+        isPrivatelyChangeable: boolean
+        ownerId: number
+        imageURL: string | null
+    }[]
+
+```
+
 ### /api/character/search/:query
 
 GET:
@@ -115,7 +157,7 @@ GET:
         isPrivatelyChangeable: boolean
         ownerId: number
         imageURL: string | null
-    }
+    }[]
 
 ### /api/user/chats
 Gerencia chats do usuário
