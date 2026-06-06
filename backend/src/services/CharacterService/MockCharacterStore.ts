@@ -42,4 +42,9 @@ export default abstract class MockCharacterService {
             ownerId: this.mockChar.ownerId,
         }
     }
+
+    //eslint-disable-next-line
+    public static async createDerived(base: Character, newOwner: User): Promise<Character> {
+        return this.mockChar
+    }
 }

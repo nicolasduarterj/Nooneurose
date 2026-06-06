@@ -23,7 +23,10 @@ const Paths = {
     },
     Character: {
         _: '/character',
-        ById: '/byId/:id',
+        ById: {
+            _: '/byId/:id',
+            derive: '/derive'
+        },
         Search: '/search/:query',
         ByOwner: '/byUser/:userId'
     }

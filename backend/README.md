@@ -128,6 +128,14 @@ PATCH:
 
 ```
 
+### /api/character/byId/:id/derive
+```
+POST:
+    Cria um personagem derivado
+    Estrutura da resposta: ver acima.
+    Erros: 400, 404
+```
+
 ### /api/character/byUser/:userId
 ```
 GET:

@@ -22,7 +22,7 @@ characterRouter.post(APIPaths.Character._(), authorize, async function(req: Req,
     res.json(character)
 })
 
-characterRouter.get(APIPaths.Character.ById(), async function(req: Req, res: Res) {
+characterRouter.get(APIPaths.Character.ById._(), async function(req: Req, res: Res) {
     const id = parseInt(req.params.id)
     if (Number.isNaN(id))
         throw new RouteError(400, 'invalid id')
@@ -45,7 +45,7 @@ characterRouter.get(APIPaths.Character.Search(), async function(req: Req, res: R
     res.json(match)
 })
 
-characterRouter.patch(APIPaths.Character.ById(), authorize, async function(req: Req, res: Res) {
+characterRouter.patch(APIPaths.Character.ById._(), authorize, async function(req: Req, res: Res) {
     if(!req.user)
         throw new RouteError(500, 'error missing user')
 
@@ -126,6 +126,24 @@ characterRouter.get(APIPaths.Character.ByOwner(), async function(req: Req, res: 
 
     const chars = await services.CharacterService.getByUser(user)
     res.json(chars)
+})
+
+characterRouter.post(APIPaths.Character.ById.derive(), authorize, async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const charId = Number.parseInt(req.params.id)
+    if (Number.isNaN(charId))
+        throw new RouteError(400, 'invalid id')
+
+    const services = getServices()
+    const base = await services.CharacterService.getById(charId)
+
+    if (!base)
+        throw new RouteError(404, 'Inexistent character to derive')
+
+    const derived = await services.CharacterService.createDerived(base, req.user)
+    res.json(derived)
 })
 
 export default characterRouter
