@@ -22,6 +22,20 @@ POST:
         email: string,
         password: string //HASH
     }
+
+PATCH:
+    Atualiza o usuário logado; precisa de login.
+
+    Estrutura do body: {
+        name?: string,
+        password?: string
+    }
+
+    Estrutura da resposta: {
+        id: number,
+        name: string,
+        email: string,
+    }
 ```
 
 ### /api/user/login
