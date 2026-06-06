@@ -105,4 +105,11 @@ userRouter.patch(APIPaths.User._(), authorize, async function(req: Req, res: Res
     res.json({ ...updatedUser, password: undefined })
 })
 
+userRouter.get(APIPaths.User.search(), async function(req: Req, res: Res) {
+    const services = getServices()
+
+    const candidates = await services.UserService.search(req.params.query)
+    res.json(candidates.map(candidate => ({ ...candidate, password: undefined })))
+})
+
 export default userRouter

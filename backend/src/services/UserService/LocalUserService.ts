@@ -51,4 +51,10 @@ export default abstract class LocalUserService {
         foundUser.password = change.password ?? foundUser.password
         return foundUser
     }
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public static async search(query: string): Promise<User[]> {
+        const candidates = Array.from(this.userRepo).filter(user => user.name.match(query) !== null)
+        return candidates
+    }
 }
