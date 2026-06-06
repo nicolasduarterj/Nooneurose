@@ -2,8 +2,9 @@
 
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
 import { Character } from "@/types/character";
-import { MessageSquareText } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ChatCreateButton from "../../chat/create/ChatCreateButton";
 
 type CharacterItemProps = {
     character: Character
@@ -14,14 +15,18 @@ export default function CharacterItem({ character }: CharacterItemProps) {
 
     return (
         <Item
-            className="flex items-center justify-between rounded-md p-2 hover:bg-neutral/5">
-            <ItemContent onClick={() => router.push(`/characters/${character.id}`)}>
+            className="flex items-center justify-between rounded-md p-2">
+            <ItemContent>
                 <ItemTitle>{character.name}</ItemTitle>
                 <ItemDescription>{character.description}</ItemDescription>
             </ItemContent>
             <ItemActions>
-                <button type="button" className="p-2 rounded-xl hover:bg-tertiary cursor-pointer">
-                    <MessageSquareText className="size-6" />
+                <ChatCreateButton characterId={character.id} />
+                <button 
+                    type="button" 
+                    className="p-2 rounded-xl hover:bg-tertiary cursor-pointer"
+                    onClick={() => router.push(`/characters/${character.id}`)}>
+                    <ArrowRight className="size-5" />
                 </button>
             </ItemActions>
         </Item>
