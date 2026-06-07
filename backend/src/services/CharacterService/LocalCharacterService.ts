@@ -69,4 +69,9 @@ export default abstract class LocalCharacterService {
         this.characterStore.push(clone)
         return clone
     }
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public static async getN(n: number): Promise<Character[]> {
+        return this.characterStore.slice(0, n)
+    }
 }
