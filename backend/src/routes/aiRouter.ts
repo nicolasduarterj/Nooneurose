@@ -29,15 +29,20 @@ aiRouter.post(APIPaths.AI.Send(), authorize, async function(req: Req, res: Res) 
         throw new RouteError(400, 'Inexistent chat')
 
     const msg = await services.MessageStorageService.registerMessage(content, chat)
+
     const character = await services.CharacterService.getById(chat.characterId)
     if (!character)
         throw new RouteError(500, 'chat with invalid character')
+
     const latestPrompt = await services.PromptService.getLatestPrompt(character)
     const history = await services.MessageStorageService.getMessagesAndResponsesByChat(chat)
+
     const response = await services.AIService.sendMessage(msg.content, latestPrompt.content, history)
     await services.MessageStorageService.registerResponse(response, msg.id)
     res.json({ response: response })
-    await services.PromptService.generatePromptFromUnusedMessages(chat)
+
+    if (character.isPrivatelyChangeable && (character.ownerId === req.user.id || character.isGloballyChangeable))
+        await services.PromptService.generatePromptFromUnusedMessages(chat)
 })
 
 export default aiRouter
