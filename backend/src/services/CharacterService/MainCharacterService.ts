@@ -65,4 +65,9 @@ export default abstract class MainCharacterService {
 
         return character
     }
+
+    public static async getN(n: number): Promise<Character[]> {
+        const res = await db.select().from(charactersTable).limit(n)
+        return res
+    }
 }

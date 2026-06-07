@@ -99,6 +99,18 @@ POST:
         ownerId: number
         imageURL: string | null
     }
+
+GET:
+    Retorna 10 personagens
+    Estrutura da resposta: {
+        id: number
+        name: string
+        description: string
+        isGloballyChangeable: boolean
+        isPrivatelyChangeable: boolean
+        ownerId: number
+        imageURL: string | null
+    }[]
 ```
 
 ### /api/character/byId/:id

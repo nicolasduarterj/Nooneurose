@@ -22,6 +22,12 @@ characterRouter.post(APIPaths.Character._(), authorize, async function(req: Req,
     res.json(character)
 })
 
+characterRouter.get(APIPaths.Character._(), async function(req:Req, res: Res) {
+    const services = getServices()
+    const chars = await services.CharacterService.getN(10)
+    res.json(chars)
+})
+
 characterRouter.get(APIPaths.Character.ById._(), async function(req: Req, res: Res) {
     const id = parseInt(req.params.id)
     if (Number.isNaN(id))
