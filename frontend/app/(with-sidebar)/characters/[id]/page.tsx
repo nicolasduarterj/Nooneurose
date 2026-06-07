@@ -5,6 +5,7 @@ import CharacterView from "@/components/features/characters/view/CharacterView";
 import { Character } from "@/types/character";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
+import ChatCreateButton from "@/components/features/chat/create/ChatCreateButton";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -43,8 +44,9 @@ export default function CharacterPage({ params }: CharacterPageProps) {
     return (
         <main className="flex h-full w-full flex-col gap-4 p-6 min-h-0 relative">
             <div className="simple-mesh-gradient" aria-hidden="true" />
-            <div>
+            <div className="flex items-center justify-between px-2">
                 <h1 className="text-2xl font-bold">Personagem</h1>
+                <ChatCreateButton characterId={id} buttonType="text" buttonText="Novo Chat" />
             </div>
             <Separator className="bg-primary/50" />
 

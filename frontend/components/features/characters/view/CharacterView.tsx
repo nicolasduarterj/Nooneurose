@@ -1,16 +1,54 @@
+'use client';
+
 import { Character } from "@/types/character";
 import Image from 'next/image'
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { GitBranch, Pencil } from "lucide-react";
+import CharacterDeleteDialog from "../delete/CharacterDeleteDialog";
 
 type CharacterViewProps = {
     character: Character;
 };
 
 export default function CharacterView({ character }: CharacterViewProps) {
+    const { user } = useAuth();
+    const router = useRouter();
+    const isOwner = user?.id === character.ownerId;
+
     return (
         <section className="flex flex-col w-full h-full gap-4 rounded-md border border-neutral/20 bg-secondary p-4 text-neutral/80 sm:p-6">
-            <div className="space-y-1">
-                <h2 className="text-xl font-semibold">{character.name}</h2>
-                <p className="text-sm text-neutral/70">{character.description}</p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1">
+                    <h2 className="text-xl font-semibold">{character.name}</h2>
+                    <p className="text-sm text-neutral/70">{character.description}</p>
+                </div>
+
+                <div className="flex flex-row flex-wrap gap-4">
+                    <button
+                        type="button"
+                        className="flex items-center gap-2 px-2 py-2 rounded-lg bg-tertiary text-neutral/80 border border-primary/30 hover:bg-primary/20 cursor-pointer"
+                        >
+                        <GitBranch size={12} />
+                        Ramificar
+                    </button>
+                    {isOwner && (
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                className="flex items-center gap-2 px-2 py-2 rounded-lg bg-neutral/10 text-neutral/80 hover:bg-neutral/15 cursor-pointer"
+                                onClick={() => router.push(`/characters/${character.id}/edit`)}
+                            >
+                                <Pencil size={12}/>
+                                Editar
+                            </button>
+                            <CharacterDeleteDialog
+                            characterId={character.id}
+                            onDelete={() => router.push("/characters")}
+                        />
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="w-fit h-fit rounded-md bg-tertiary/25">
@@ -26,7 +64,11 @@ export default function CharacterView({ character }: CharacterViewProps) {
             <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                 <div className="rounded-md bg-tertiary/25 p-3 sm:col-span-2">
                     <dt className="text-neutral/60">Criado por</dt>
-                    <dd className="font-medium">{character.ownerId}</dd>
+                    <dd 
+                        className="w-fit font-medium cursor-pointer"
+                        onClick={() => router.push(`/user/creator/${character.ownerId}`)}>
+                            {character.ownerId}
+                    </dd>
                 </div>
 
                 <div className="rounded-md bg-tertiary/25 p-3">
