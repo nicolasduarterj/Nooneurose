@@ -1,7 +1,6 @@
 "use client";
 
-import { CircleUser, House, ListIndentDecrease, UserSearch } from "lucide-react";
-import { Button } from "../ui/button";
+import { CircleUser, House, UserSearch } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,20 +11,24 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { API_BASE, authHeaders } from "@/lib/api";
 import { Chat } from "@/types/chat";
+import { Character } from "@/types/character";
 import { useAuth } from "@/contexts/AuthContext";
-import { User } from "@/types/user";
 
 export default function Sidebar() {
   const [chats, setChats] = useState<Array<Chat>>([]);
-  const { user, logout } = useAuth();
+  const [characterNames, setCharacterNames] = useState<Record<number, string>>({});
+  const { user, logout, isAuthenticated } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const init = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/user/chats`, {
@@ -45,7 +48,32 @@ export default function Sidebar() {
     };
 
     init();
-  }, []);
+  }, [pathname, isAuthenticated]);
+
+  useEffect(() => {
+    const loadCharacterNames = async () => {
+      const idsToLoad = Array.from(new Set(chats.map((chat) => chat.characterId)));
+
+      if (idsToLoad.length === 0) return;
+
+      try {
+        const entries = await Promise.all(
+          idsToLoad.map(async (id) => {
+            const res = await fetch(`${API_BASE}/api/character/byId/${id}`);
+            if (!res.ok) return [id, `Personagem ${id}`] as const;
+            const character: Character = await res.json();
+            return [id, character.name] as const;
+          })
+        );
+
+        setCharacterNames(Object.fromEntries(entries));
+      } catch (error) {
+        console.error("Falha ao carregar nomes dos personagens", error);
+      }
+    };
+
+    loadCharacterNames();
+  }, [chats, pathname]);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -63,7 +91,9 @@ export default function Sidebar() {
       }
     };
     loadUser();
-  }, [user?.id]);
+  }, [user?.id, pathname]);
+
+  const displayName = user?.name ?? userName ?? "Carregando...";
 
   return (
     <aside className="flex flex-col justify-between min-h-screen h-full w-full gap-6 p-6 md:p-8">
@@ -112,7 +142,7 @@ export default function Sidebar() {
         <ul className="flex flex-col gap-2 text-sm text-neutral/40">
           {chats.slice(-3).reverse().map((chat) => (
             <li key={chat.id} onClick={() => router.push(`/chat/${chat.id}`)} className="bg-tertiary/25 cursor-pointer hover:bg-primary/10 rounded-md px-2 py-1">
-              <p>{`Chat ${chat.id}`}</p>
+              <p>{`Chat ${chat.id} | ${characterNames[chat.characterId] ?? `Personagem ${chat.characterId}`}`}</p>
             </li>
           ))}
         </ul>
@@ -121,9 +151,9 @@ export default function Sidebar() {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <div className="flex flex-row items-center gap-2 transition-colors cursor-pointer hover:bg-primary/10 rounded-md px-2 py-1.5 w-full">
-              <CircleUser className="h-8 w-8 flex-shrink-0" />
+              <CircleUser className="h-8 w-8 shrink-0" />
               <div className="flex flex-col text-sm text-left min-w-0">
-                <p className="text-neutral/70 truncate">{userName ?? user?.name ?? "Carregando..."}</p>
+                <p className="text-neutral/70 truncate">{displayName}</p>
                 <p className="text-neutral/50 truncate">{userEmail ?? ""}</p>
               </div>
             </div>
