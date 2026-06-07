@@ -58,6 +58,12 @@ export default function UserCreatorPage() {
   return (
     <main className="flex h-full w-full flex-col gap-4 p-6 min-h-0 relative">
       <div aria-hidden="true" />
+      <section className="flex flex-col w-full gap-4 rounded-md border border-neutral/20 bg-secondary p-4 text-neutral/80 sm:p-">
+        <div className="rounded-md bg-tertiary/25 p-3 sm:col-span-2">
+          <dt className="text-neutral/60">ID do Usuário</dt>
+          <dd className="font-medium">{creator.id}</dd>
+        </div>
+      </section>
       <UserView showEmail={false} user={creator} />
       <MeList userId={creator.id} />
     </main>
