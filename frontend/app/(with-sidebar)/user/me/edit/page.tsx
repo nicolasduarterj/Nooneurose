@@ -9,7 +9,7 @@ import { User, FormData } from '@/types/user'
 
 export default function MeUser() {
   const [user, setUser] = useState<User | null>(null);
-  const { user: authUser } = useAuth();
+  const { user: authUser, updateUser } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     name: "",
     password: "",
@@ -140,6 +140,7 @@ export default function MeUser() {
         confirmPassword: "",
         oldPassword: "",
       });
+      updateUser({ name: updated.name });
       setEditMode(false);
     } catch (error) {
       console.error(error);
