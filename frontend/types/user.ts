@@ -30,5 +30,11 @@ export interface Creator {
   id: number;
   name: string;
   email: string;
-  description?: string;
+}
+
+export type FormData = {
+  name: string;
+  password: string;
+  confirmPassword: string;
+  oldPassword: string;
 }

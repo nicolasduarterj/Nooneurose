@@ -21,7 +21,7 @@ export default function MeList({ userId }: MeListProps) {
       setError(null);
       try {
         const endpoint = userId
-          ? `${API_BASE}/api/user/${userId}/characters`
+          ? `${API_BASE}/api/character/byUser/${userId}`
           : `${API_BASE}/api/user/characters`;
 
         const res = await fetch(endpoint, {

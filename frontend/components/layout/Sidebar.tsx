@@ -65,43 +65,19 @@ export default function Sidebar() {
     loadUser();
   }, [user?.id]);
 
-  const createChat = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/api/user/chats`, {
-        method: "POST",
-        headers: authHeaders(),
-        body: JSON.stringify({ characterId: 1 }),
-      });
-
-      if (!res.ok)
-        throw new Error(`Erro ao criar chat: ${res.status}`);
-
-      const newChat: Chat = await res.json();
-      setChats((prevChats) => [...prevChats, newChat]);
-      router.push(`/chat/${newChat.id}`);
-    } catch (error) {
-      console.error("Falha ao criar novo chat", error);
-    }
-  };
-
   return (
     <aside className="flex flex-col justify-between min-h-screen h-full w-full gap-6 p-6 md:p-8">
       <div className="flex flex-col gap-4">
         <div className="flex flex-row justify-evenly items-center px-4">
           <div>
-            <h1 className="text-2xl font-bold">Nooneurose</h1>
+            <h1
+              className="text-3xl font-bold tracking-tight leading-none"
+              style={{ fontFamily: "'Anta', sans-serif" }}
+            >
+              <span style={{ color: '#FF007A' }}>NOO</span>
+              <span className="text-white">NEUROSE</span>
+            </h1>
           </div>
-          <div>
-            <ListIndentDecrease className="h-5 w-5 hover:cursor-pointer" />
-          </div>
-        </div>
-        <div className="px-4">
-          <Button
-            className="w-full bg-primary/50 hover:bg-primary/60"
-            onClick={createChat}
-          >
-            Novo chat
-          </Button>
         </div>
       </div>
 
@@ -143,14 +119,14 @@ export default function Sidebar() {
       </div>
       <div className="flex flex-row px-4 py-2.5 gap-4 border-t items-center border-primary/30 text-neutral/30 mt-auto">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button type="button" className="flex flex-row items-center gap-2 transition-colors cursor-pointer hover:bg-primary/10 rounded-md px-2 py-1.5 w-full">
+          <DropdownMenuTrigger>
+            <div className="flex flex-row items-center gap-2 transition-colors cursor-pointer hover:bg-primary/10 rounded-md px-2 py-1.5 w-full">
               <CircleUser className="h-8 w-8 flex-shrink-0" />
               <div className="flex flex-col text-sm text-left min-w-0">
                 <p className="text-neutral/70 truncate">{userName ?? user?.name ?? "Carregando..."}</p>
                 <p className="text-neutral/50 truncate">{userEmail ?? ""}</p>
               </div>
-            </button>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="rounded-xl border border-primary/20 bg-slate-950/95 shadow-lg backdrop-blur-xl z-50"
