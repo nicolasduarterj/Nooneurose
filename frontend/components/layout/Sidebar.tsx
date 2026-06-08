@@ -113,7 +113,9 @@ export default function Sidebar() {
 
       <div className="px-4 py-2.5 border-t border-primary/30">
         <ul className="flex flex-col gap-2 text-sm text-neutral/40">
-          <li className="flex flex-row items-center gap-2 cursor-pointer hover:bg-primary/10 rounded-md p-2">
+          <li className="flex flex-row items-center gap-2 cursor-pointer hover:bg-primary/10 rounded-md p-2"
+              onClick={() => router.push("/home")}
+          >
             <div>
               <House />
             </div>

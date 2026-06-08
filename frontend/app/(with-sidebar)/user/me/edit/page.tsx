@@ -60,6 +60,13 @@ export default function MeUser() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const validatePassword = (value: string) => {
+    if (value.length < 8) return 'A senha deve ter no mínimo 8 caracteres';
+    if (!/[A-Z]/.test(value)) return 'A senha deve conter ao menos uma letra maiúscula';
+    if (!/[0-9]/.test(value)) return 'A senha deve conter ao menos um número';
+    return '';
+  };
+
   const handleCancel = () => {
     if (user) {
       setFormData({
@@ -89,6 +96,14 @@ export default function MeUser() {
     if (formData.oldPassword && !formData.password) {
       setSaveError('Digite a nova senha para alterá-la');
       return;
+    }
+
+    if (formData.password) {
+      const passwordErro = validatePassword(formData.password);
+      if (passwordErro) {
+        setSaveError(passwordErro);
+        return;
+      }
     }
 
     if (formData.password && formData.oldPassword) {
