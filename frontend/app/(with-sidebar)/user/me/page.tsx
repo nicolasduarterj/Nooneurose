@@ -48,7 +48,17 @@ export default function MeUser() {
         {isLoading ? (
           <div className="rounded-md bg-tertiary/25 p-4 text-neutral/60">Carregando dados do usuário...</div>
         ) : (
-          <UserView user={user ?? undefined} showEmail />
+          <>
+            {user ? (
+              <section className="flex flex-col w-full gap-4 rounded-md border border-neutral/20 bg-secondary p-4 text-neutral/80 sm:p-">
+                <div className="rounded-md bg-tertiary/25 p-3 sm:col-span-2">
+                  <dt className="text-neutral/60">ID do Usuário</dt>
+                  <dd className="font-medium">{user.id}</dd>
+                </div>
+              </section>
+            ) : null}
+            <UserView user={user ?? undefined} showEmail />
+          </>
         )}
         <MeList />
     </main>

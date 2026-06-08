@@ -7,6 +7,7 @@ import CharactersList from "@/components/features/characters/list/CharactersList
 import { Separator } from "@/components/ui/separator";
 import { Character } from "@/types/character";
 import { authHeaders } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -34,6 +35,22 @@ async function getCharacters(characterName: string): Promise<Array<Character>> {
     return characters;
 }
 
+async function getCreatorsByName(name: string): Promise<Array<Creator>> {
+    const trimmedName = name.trim();
+    const endpoint = trimmedName === ""
+        ? `${API_BASE}/api/user/search/%`
+        : `${API_BASE}/api/user/search/${encodeURIComponent(trimmedName)}`;
+
+    const res = await fetch(endpoint, { headers: authHeaders() });
+
+    if (!res.ok) {
+        if (res.status === 404) return [];
+        throw new Error(`Erro ao buscar criadores: ${res.status}`);
+    }
+
+    return res.json();
+}
+
 export default function Characters() {
     const [loading, setLoading] = useState(false)
     const [characters, setCharacters] = useState<Array<Character>>([]);
@@ -44,6 +61,7 @@ export default function Characters() {
         isPrivatelyChangeableSelected: false,
     });
     const [tab, setTab] = useState<"criadores" | "personagens">("personagens");
+    const router = useRouter();
 
     useEffect(() => {
         async function fetchCharacters() {
@@ -104,7 +122,7 @@ export default function Characters() {
 
             <CharacterFilters
                 tab={tab}
-                onTabChange={setTab}
+                onTabChange={handleSetTab}
                 value={charactersFilters}
                 isLoading={loading}
                 onChange={setCharactersFilters}
@@ -118,7 +136,10 @@ export default function Characters() {
                     {creators.length === 0 ? (
                         <p className="text-neutral/60">Nenhum criador encontrado.</p>
                     ) : creators.map((c) => (
-                        <div key={c.id} className="flex items-center justify-between gap-4 p-3 rounded-md bg-primary/5">
+                        <div 
+                            key={c.id}
+                            onClick={() => router.push(`/user/creator/${c.id}`)} 
+                            className="flex items-center justify-between gap-4 p-3 rounded-md bg-primary/5 cursor-pointer">
                             <div className="flex flex-col min-w-0">
                                 <span className="font-medium truncate">{c.name}</span>
                                 <span className="text-sm text-neutral/60 truncate">{c.email}</span>

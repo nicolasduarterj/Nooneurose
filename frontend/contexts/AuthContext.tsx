@@ -2,7 +2,7 @@
 
 import { DoLoginRequest, LoggedUser, LoginResponse } from "@/types/user";
 import { createContext, useContext, useEffect, useState } from "react";
-import { API_BASE, APP_AUTH_COOKIE, APP_USER_NAME_COOKIE, COOKIE_MAX_AGE } from "@/lib/api";
+import { API_BASE, APP_AUTH_COOKIE, COOKIE_MAX_AGE, authHeaders } from "@/lib/api";
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { decodeJwt } from "@/lib/jwt";
 
@@ -11,13 +11,15 @@ interface AuthContextType {
     isAuthenticated: boolean;
     login: (credentials: DoLoginRequest, onLoginSuccess?: () => void) => Promise<void>;
     logout: () => Promise<void>;
+    updateUser: (userUpdate: Partial<LoggedUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user: null,
     isAuthenticated: false,
     login: async () => {},
-    logout: async () => {}
+    logout: async () => {},
+    updateUser: () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -26,7 +28,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const cleanSession = () => {
         destroyCookie(null, APP_AUTH_COOKIE, { path: "/" });
-        destroyCookie(null, APP_USER_NAME_COOKIE, { path: "/" });
         setLoggedUser(null);
         setIsAuthenticated(false);
     }
@@ -35,25 +36,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const loadStoredAuth = async () => {
             const cookies = parseCookies();
             const token = cookies[APP_AUTH_COOKIE];
-            const userName = cookies[APP_USER_NAME_COOKIE];
 
-            if (token && userName) {
-                const payload = decodeJwt(token) as { id?: number; email?: string };
-
-                if (payload?.id) {
-                    setLoggedUser({
-                        id: payload.id,
-                        name: userName
-                    });
-
-                    setIsAuthenticated(true);
-                }
-                else{
-                    cleanSession();
-                }
-            }
-            else{
+            if (!token) {
                 cleanSession();
+                return;
+            }
+
+            const payload = decodeJwt(token) as { id?: number; email?: string };
+            if (!payload?.id) {
+                cleanSession();
+                return;
+            }
+
+            setIsAuthenticated(true);
+            setLoggedUser({ id: payload.id, name: "" });
+
+            try {
+                const res = await fetch(`${API_BASE}/api/user/byId/${payload.id}`, {
+                    headers: authHeaders(),
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    setLoggedUser({ id: payload.id, name: data.name });
+                }
+            } catch (error) {
+                console.error("Falha ao carregar usuário autenticado", error);
             }
         }
 
@@ -80,19 +88,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			secure: process.env.NODE_ENV === "production",
 		});
 
-        setCookie(null, APP_USER_NAME_COOKIE, data.name, {
-		    maxAge: COOKIE_MAX_AGE,
-		    path: "/",
-		    sameSite: "lax",
-		    secure: process.env.NODE_ENV === "production",
-	    });
-
         const tokenPayload = decodeJwt(data.token);
 
         const authenticatedUser: LoggedUser = {
             id: tokenPayload?.id || 0,
             name: data.name,
-            email: email,
         };
 
         setLoggedUser(authenticatedUser);
@@ -101,12 +101,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         onLoginSuccess?.();
     };
 
+    const updateUser = (userUpdate: Partial<LoggedUser>) => {
+        setLoggedUser((prev) => (prev ? { ...prev, ...userUpdate } : prev));
+    };
+
     const logout = async () => {
        cleanSession();
     }
 
     return (
-        <AuthContext.Provider value={{ user: loggedUser, isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ user: loggedUser, isAuthenticated, login, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );
