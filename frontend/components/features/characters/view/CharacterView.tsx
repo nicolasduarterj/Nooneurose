@@ -20,9 +20,8 @@ export default function CharacterView({ character }: CharacterViewProps) {
     const { user } = useAuth();
     const router = useRouter();
     const [ownerName, setOwnerName] = useState<string>("Usuário");
+    const [srcDaImagem, setSrcDaImagem] = useState("/question.svg");
     const isOwner = user?.id === character.ownerId;
-    const url = character.imageURL;
-    const srcDaImagem = url && isImageUrl(url) ? url : "/question.svg";
 
     const redirectToCreator = () => {
         if (character.ownerId === user?.id) {
@@ -46,14 +45,24 @@ export default function CharacterView({ character }: CharacterViewProps) {
                 }
 
                 const data: User = await res.json();
-                
                 setOwnerName(data.name);
             } catch (error) {
                 console.error(error);
             }
         };
 
+        const validateImageUrl = async () => {
+            if (character.imageURL) {
+                const isValid = await isImageUrl(character.imageURL);
+                
+                if (isValid) {
+                    setSrcDaImagem(character.imageURL);
+                }
+            }
+        };
+
     loadUser();
+    validateImageUrl();
     }, [character, router]);
 
     return (
@@ -92,9 +101,10 @@ export default function CharacterView({ character }: CharacterViewProps) {
                     className="rounded-md object-cover"
                     width={200}
                     height={200}
+                    priority
                     onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/question.svg";
-                    }}
+                    (e.target as HTMLImageElement).src = "/question.svg";
+                }}
                 />
             </div>
 

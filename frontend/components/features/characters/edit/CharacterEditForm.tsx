@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { isImageUrl } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 export type CharacterEditFormState = {
 	name: string;
@@ -24,9 +25,22 @@ type CharacterEditFormProps = {
 };
 
 export default function CharacterEditForm({ character, formState, setFormState }: CharacterEditFormProps) {
-	const url = character.imageURL;
-    const srcDaImagem = url && isImageUrl(url) ? url : "/question.svg";
-	
+    const [srcDaImagem, setSrcDaImagem] = useState("/question.svg");
+
+	useEffect(() => {
+		const validateImageUrl = async () => {
+            if (character.imageURL) {
+                const isValid = await isImageUrl(character.imageURL);
+                
+                if (isValid) {
+                    setSrcDaImagem(character.imageURL);
+                }
+            }
+        };
+
+		validateImageUrl();
+	}, [character]);
+
 	return (
 		<section className="flex-1 flex flex-col w-full gap-4 rounded-md border border-neutral/20 bg-secondary p-4 text-neutral/80 sm:p-6">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -64,13 +78,14 @@ export default function CharacterEditForm({ character, formState, setFormState }
 						<div className="w-fit h-fit rounded-md bg-tertiary/25 shrink-0">
 							<Image
 								src={srcDaImagem}
-								alt={formState.name || character.name}
+								alt={character.name}
 								className="rounded-md object-cover"
 								width={200}
 								height={200}
+								priority
 								onError={(e) => {
 									(e.target as HTMLImageElement).src = "/question.svg";
-								}}
+                				}}
 							/>
 						</div>
 						
