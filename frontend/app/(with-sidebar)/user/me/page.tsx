@@ -5,6 +5,7 @@ import MeList from "@/components/features/user/list/characters";
 import UserView from "@/components/features/user/view/UserView";
 import { API_BASE, authHeaders } from "@/lib/api";
 import { useAuth } from '@/contexts/AuthContext';
+import { User } from "@/types/user";
 
 
 
