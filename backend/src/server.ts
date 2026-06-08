@@ -24,7 +24,16 @@ const app = express();
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+
+if (EnvVars.NodeEnv === NodeEnvs.PRODUCTION) {
+  app.use(cors({
+    origin: EnvVars.FrontendUrl,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }));
+} else {
+  app.use(cors());
+}
 
 // Show routes called in console during development
 if (EnvVars.NodeEnv === NodeEnvs.DEV) {

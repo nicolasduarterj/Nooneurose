@@ -24,5 +24,4 @@ export default async function authorize(req: Req, res: Res, next: NextFunction) 
     } catch (_error) {
         throw new RouteError(401, 'login failed')
     }
-    
 }
