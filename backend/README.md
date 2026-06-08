@@ -138,6 +138,11 @@ PATCH:
     }
     Estrutura da resposta: ver resposta do POST
 
+DELETE:
+
+    Deleta um personagem.
+    Respostas: 204, 400, 404, 403
+
 ```
 
 ### /api/character/byId/:id/derive
@@ -217,6 +222,11 @@ GET:
         ownerId: number
         characterId: number
     }
+
+    Delete:
+
+    Deleta um chat.
+    Respostas: 204, 400, 404, 403
 
 ### /api/user/chats/:id/messages
 
