@@ -78,7 +78,7 @@ export default function CharacterFilters({ tab, onTabChange, value, isLoading, o
                                             onCheckedChange={(checked) => onChange({ ...value, isGloballyChangeableSelected: !!checked })}
                                             className="data-checked:bg-tertiary/40 data-checked:border-neutral/50"
                                         />
-                                        <span>Edição global</span>
+                                        <span>Moldável pelos usuários</span>
                                     </div>
                                     <div className="flex flex-row gap-2 p-2 items-center">
                                         <Checkbox
@@ -86,7 +86,7 @@ export default function CharacterFilters({ tab, onTabChange, value, isLoading, o
                                             onCheckedChange={(checked) => onChange({ ...value, isPrivatelyChangeableSelected: !!checked })}
                                             className="data-checked:bg-tertiary/40 data-checked:border-neutral/50"
                                         />
-                                        <span>Edição restrita</span>
+                                        <span>Moldável pelo criador</span>
                                     </div>
                                 </div>
                             </PopoverContent>
@@ -105,15 +105,19 @@ export default function CharacterFilters({ tab, onTabChange, value, isLoading, o
             <div>
                 <div className="flex flex-row items-center gap-4">
                     <p>Filtros:</p>
-                    {value.isGloballyChangeableSelected && (
+                    {tab === 'personagens' && (
+                        <>
+                        {value.isGloballyChangeableSelected && (
                         <Badge className="bg-tertiary text-neutral/80 gap-1">
-                            Edição global
+                            Moldável pelos usuários
                         </Badge>
-                    )}
-                    {value.isPrivatelyChangeableSelected && (
-                        <Badge className="bg-tertiary text-neutral/80 gap-1">
-                            Edição restrita
-                        </Badge>
+                        )}
+                        {value.isPrivatelyChangeableSelected && (
+                            <Badge className="bg-tertiary text-neutral/80 gap-1">
+                                Moldável pelo criador
+                            </Badge>
+                        )}
+                        </>
                     )}
                 </div>
             </div>

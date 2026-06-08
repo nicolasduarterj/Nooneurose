@@ -73,12 +73,12 @@ export default function CharacterView({ character }: CharacterViewProps) {
                 </div>
 
                 <div className="rounded-md bg-tertiary/25 p-3">
-                    <dt className="text-neutral/60">Alteracao global</dt>
+                    <dt className="text-neutral/60">Moldável pelos usuários</dt>
                     <dd className="font-medium">{character.isGloballyChangeable ? "Sim" : "Não"}</dd>
                 </div>
 
                 <div className="rounded-md bg-tertiary/25 p-3">
-                    <dt className="text-neutral/60">Alteracao privada</dt>
+                    <dt className="text-neutral/60">Moldável pelo criador</dt>
                     <dd className="font-medium">{character.isPrivatelyChangeable ? "Sim" : "Não"}</dd>
                 </div>
             </dl>

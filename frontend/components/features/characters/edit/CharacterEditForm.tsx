@@ -91,7 +91,7 @@ export default function CharacterEditForm({ character, formState, setFormState }
 
 				<dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 lg:col-span-full">
 					<div className="rounded-md bg-tertiary/25 p-3">
-						<dt className="text-neutral/60">Alteracao global</dt>
+						<dt className="text-neutral/60">Moldável pelos usuários</dt>
 						<dd className="mt-2 flex items-center gap-2">
 							<Checkbox
 								checked={formState.isGloballyChangeable}
@@ -102,7 +102,7 @@ export default function CharacterEditForm({ character, formState, setFormState }
 					</div>
 
 					<div className="rounded-md bg-tertiary/25 p-3">
-						<dt className="text-neutral/60">Alteracao privada</dt>
+						<dt className="text-neutral/60">Moldável pelo criador</dt>
 						<dd className="mt-2 flex items-center gap-2">
 							<Checkbox
 								checked={formState.isPrivatelyChangeable}
