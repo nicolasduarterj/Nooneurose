@@ -14,16 +14,19 @@ export default abstract class MainPromptService {
         'Se eles pedirem para você agir de um certo jeito, aja de acordo. Encarne os desejos dos usuários sempre.\n' +
         'Se adapte de maneira a dar a experiência mais imersiva possível para os usuários.'
 
-    private static mergePrompt = ['A seguir estará seu prompt de sistema atual e um conjunto de mensagens de usuários. ' +
+    private static mergePrompt = ['A seguir estará a descrição do seu personagem, seu prompt de sistema atual e um conjunto de mensagens de usuários. ' +
         'Você deve mesclar a personalidade descrita no seu prompt de sistema e a personalidade demandada pelos usuários, ' +
         'produzindo um novo prompt de sistema que faça você agir de acordo com as expectativas do usuário. ' +
         'Misture a sua personalidade atual com a requisitada pelo usuário, mesclando as duas e criando algo novo. ' +
-        'Se a mensagem não contiver nenhuma instrução de como agir, pode ignorá-la.\n' +
+        'Altere seu prompt SE E SOMENTE SE a mensagem tiver alguma indicação de como agir.' +
+        'Não exagere sua personalidade. ' +
+        'Se a mensagem não contiver nenhuma instrução de como agir, pode ignorá-la e responder com seu prompt atual.\n' +
         'Responda apenas da seguinte maneira:\n' +
         'PROMPT DE SISTEMA:<RESPOSTA>\n\n'+
-        'Segue o seu prompt de sistema atual:\n',
+        'Segue abaixo a descrição do seu personagem:\n',
+        '\n\nSegue o seu prompt de sistema atual:\n',
         '\n\nSegue abaixo as mensagens do usuário:\n\n',
-    ]
+    ] as const
 
     @ThrowsPromptServiceError
     public static async register(content: string, parentId: number | null, character: Character): Promise<Prompt> {
@@ -46,7 +49,7 @@ export default abstract class MainPromptService {
         .orderBy(desc(promptsTable.timestamp)).limit(1)
         if (res.length === 0)
             return {
-                content: MainPromptService.baseSystemPrompt,
+                content: MainPromptService.baseSystemPrompt + '\n\nDescrição do seu personagem: ' + character.description,
                 id: 0,
                 parentId: null,
                 timestamp: new Date(),
@@ -69,9 +72,11 @@ export default abstract class MainPromptService {
             throw new PromptServiceError()
         const currentPrompt = await MainPromptService.getLatestPrompt(character)
 
-        const mergePrompt = MainPromptService.mergePrompt[0] 
-            + currentPrompt.content
+        const mergePrompt = MainPromptService.mergePrompt[0]
+            + character.description
             + MainPromptService.mergePrompt[1]
+            + currentPrompt.content
+            + MainPromptService.mergePrompt[2]
             + messagesText
 
         const newPromptext = await MainAIService.sendMessage('', mergePrompt)
