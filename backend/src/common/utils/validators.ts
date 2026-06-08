@@ -12,3 +12,26 @@ export const transformIsDate = transform(
   (arg) => new Date(arg as string),
   (arg) => isDate(arg),
 );
+
+export function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+export function isStringInRange(
+  value: unknown,
+  min: number,
+  max: number
+): value is string {
+  return (
+    typeof value === 'string' &&
+    value.trim().length >= min &&
+    value.trim().length <= max
+  );
+}
+
+export function isValidEmail(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(value);
+}

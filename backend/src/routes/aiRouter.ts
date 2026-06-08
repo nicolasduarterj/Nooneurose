@@ -26,7 +26,7 @@ aiRouter.post(APIPaths.AI.Send(), authorize, async function(req: Req, res: Res) 
 
     const chat = await services.ChatService.getChatById(chatId)
     if (!chat || chat.ownerId !== req.user?.id)
-        throw new RouteError(400, 'Inexistent chat')
+        throw new RouteError(404, 'Inexistent chat')
 
     const msg = await services.MessageStorageService.registerMessage(content, chat)
 
