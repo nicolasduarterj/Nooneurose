@@ -44,8 +44,7 @@ export default function CharacterPage({ params }: CharacterPageProps) {
     }, [id]);
 
     return (
-        <main className="flex h-full w-full flex-col gap-4 p-6 min-h-0 relative">
-            <div className="simple-mesh-gradient" aria-hidden="true" />
+        <main className="flex h-full w-full flex-col gap-4 p-6 min-h-0 relative overflow-y-auto custom-scrollbar">
             <div className="flex items-center justify-between px-2">
                 <h1 className="text-2xl font-bold">Personagem</h1>
                 <ChatCreateButton characterId={numberId} buttonType="text" buttonText="Novo Chat" />
