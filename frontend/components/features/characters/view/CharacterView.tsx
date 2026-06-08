@@ -4,8 +4,13 @@ import { Character } from "@/types/character";
 import Image from 'next/image'
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { GitBranch, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import CharacterDeleteDialog from "../delete/CharacterDeleteDialog";
+import CharacterDeriveButton from "../derive/CharacterDeriveButton";
+import { isImageUrl } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { API_BASE, authHeaders } from "@/lib/api";
+import { User } from "@/types/user";
 
 type CharacterViewProps = {
     character: Character;
@@ -14,7 +19,42 @@ type CharacterViewProps = {
 export default function CharacterView({ character }: CharacterViewProps) {
     const { user } = useAuth();
     const router = useRouter();
+    const [ownerName, setOwnerName] = useState<string>("Usuário");
     const isOwner = user?.id === character.ownerId;
+    const url = character.imageURL;
+    const srcDaImagem = url && isImageUrl(url) ? url : "/question.svg";
+
+    const redirectToCreator = () => {
+        if (character.ownerId === user?.id) {
+            router.push("/user/me");
+            return;
+        }
+
+        router.push(`/user/creator/${character.ownerId}`);
+    }
+    
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/api/user/byId/${character.ownerId}`, {
+                method: "GET",
+                headers: authHeaders(),
+                });
+
+                if (!res.ok) {
+                throw new Error(`Erro ao buscar usuário: ${res.status}`);
+                }
+
+                const data: User = await res.json();
+                
+                setOwnerName(data.name);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+    loadUser();
+    }, [character, router]);
 
     return (
         <section className="flex flex-col w-full h-full gap-4 rounded-md border border-neutral/20 bg-secondary p-4 text-neutral/80 sm:p-6">
@@ -25,13 +65,7 @@ export default function CharacterView({ character }: CharacterViewProps) {
                 </div>
 
                 <div className="flex flex-row flex-wrap gap-4">
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 px-2 py-2 rounded-lg bg-tertiary text-neutral/80 border border-primary/30 hover:bg-primary/20 cursor-pointer"
-                        >
-                        <GitBranch size={12} />
-                        Ramificar
-                    </button>
+                    <CharacterDeriveButton characterId={character.id} buttonType="text" buttonText="Derivar" />
                     {isOwner && (
                         <div className="flex items-center gap-2">
                             <button
@@ -53,11 +87,14 @@ export default function CharacterView({ character }: CharacterViewProps) {
 
             <div className="w-fit h-fit rounded-md bg-tertiary/25">
                 <Image
-                    src={character.imageURL ?? "/question.svg"}
+                    src={srcDaImagem}
                     alt={character.name}
                     className="rounded-md object-cover"
                     width={200}
                     height={200}
+                    onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/question.svg";
+                    }}
                 />
             </div>
 
@@ -66,18 +103,18 @@ export default function CharacterView({ character }: CharacterViewProps) {
                     <dt className="text-neutral/60">Criado por</dt>
                     <dd 
                         className="w-fit font-medium cursor-pointer"
-                        onClick={() => router.push(`/user/creator/${character.ownerId}`)}>
-                            {character.ownerId}
+                        onClick={redirectToCreator}>
+                            {`${ownerName} #${character.ownerId}`}
                     </dd>
                 </div>
 
                 <div className="rounded-md bg-tertiary/25 p-3">
-                    <dt className="text-neutral/60">Alteracao global</dt>
+                    <dt className="text-neutral/60">Moldável pelos usuários</dt>
                     <dd className="font-medium">{character.isGloballyChangeable ? "Sim" : "Não"}</dd>
                 </div>
 
                 <div className="rounded-md bg-tertiary/25 p-3">
-                    <dt className="text-neutral/60">Alteracao privada</dt>
+                    <dt className="text-neutral/60">Moldável pelo criador</dt>
                     <dd className="font-medium">{character.isPrivatelyChangeable ? "Sim" : "Não"}</dd>
                 </div>
             </dl>

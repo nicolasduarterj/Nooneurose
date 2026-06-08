@@ -167,15 +167,15 @@ export default function Sidebar() {
               <DropdownMenuLabel className="text-xs uppercase tracking-[0.16em] text-primary/50">
                 Minha Conta
               </DropdownMenuLabel>
-              <DropdownMenuItem className="text-sm text-neutral/80 hover:bg-primary/10" onClick={() => router.push("/user/me")}>
+              <DropdownMenuItem className="text-sm text-neutral/80 focus:bg-primary/10 focus:text-neutral/80" onClick={() => router.push("/user/me")}>
                 Ver minha conta
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-sm text-neutral/80 hover:bg-primary/10" onClick={() => router.push("/user/me/edit")}>
+              <DropdownMenuItem className="text-sm text-neutral/80 focus:bg-primary/10 focus:text-neutral/80" onClick={() => router.push("/user/me/edit")}>
                 Editar minha conta
               </DropdownMenuItem>
             </DropdownMenuGroup>
               <DropdownMenuSeparator className="border-primary/20" />
-              <DropdownMenuItem className="text-sm text-neutral/80 hover:bg-primary/10" onClick={async () => {await logout();router.push('/');}}>
+              <DropdownMenuItem className="text-sm text-neutral/80 focus:bg-primary/10 focus:text-neutral/80" onClick={async () => {await logout();router.push('/');}}>
                 Logout
               </DropdownMenuItem>
           </DropdownMenuContent>

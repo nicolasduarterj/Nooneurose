@@ -5,6 +5,7 @@ import { Character } from "@/types/character";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ChatCreateButton from "../../chat/create/ChatCreateButton";
+import CharacterDeriveButton from "../derive/CharacterDeriveButton";
 
 type CharacterItemProps = {
     character: Character
@@ -21,6 +22,7 @@ export default function CharacterItem({ character }: CharacterItemProps) {
                 <ItemDescription>{character.description}</ItemDescription>
             </ItemContent>
             <ItemActions>
+                <CharacterDeriveButton characterId={character.id} />
                 <ChatCreateButton characterId={character.id} />
                 <button 
                     type="button" 
