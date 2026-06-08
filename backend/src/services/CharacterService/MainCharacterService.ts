@@ -59,8 +59,10 @@ export default abstract class MainCharacterService {
         const character = res[0]
         const latestBasePrompt = await services.PromptService.getLatestPrompt(base)
         await db.insert(promptsTable).values({
-            ...latestBasePrompt,
-            character: character.id
+            content: latestBasePrompt.content,
+            parentId: latestBasePrompt.parentId,
+            character: character.id,
+            timestamp: new Date()
         })
 
         return character
