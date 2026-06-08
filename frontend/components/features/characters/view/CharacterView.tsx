@@ -31,6 +31,10 @@ export default function CharacterView({ character }: CharacterViewProps) {
 
         router.push(`/user/creator/${character.ownerId}`);
     }
+
+    const redirectToCharacters = () => {
+        router.push("/characters");
+    }
     
     useEffect(() => {
         const loadUser = async () => {
@@ -87,7 +91,7 @@ export default function CharacterView({ character }: CharacterViewProps) {
                             </button>
                             <CharacterDeleteDialog
                             characterId={character.id}
-                            onDelete={() => router.push("/characters")}
+                            onDelete={redirectToCharacters}
                         />
                         </div>
                     )}

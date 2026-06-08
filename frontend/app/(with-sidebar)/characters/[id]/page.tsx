@@ -41,7 +41,7 @@ export default function CharacterPage({ params }: CharacterPageProps) {
         }
 
         fetchCharacter();
-    }, [id]);
+    }, [id, router]);
 
     return (
         <main className="flex h-full w-full flex-col gap-4 p-6 min-h-0 relative overflow-y-auto custom-scrollbar">

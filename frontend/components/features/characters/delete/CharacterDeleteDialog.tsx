@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { API_BASE, authHeaders } from "@/lib/api";
 
 type CharacterDeleteProps = {
     characterId: number;
@@ -14,7 +15,18 @@ export default function CharacterDeleteDialog({ characterId, onDelete }: Charact
     const [open, setOpen] = useState(false);
     
     const handleDelete = async () => {
-        // Implementar lógica de deleção aqui
+        try {
+            const res = await fetch(`${API_BASE}/api/character/byId/${characterId}`, {
+                method: "DELETE",
+                headers: authHeaders(),
+            });
+
+            if (!res.ok)
+                throw new Error(`Erro ao deletar personagem: ${res.status}`);
+        }
+        catch (error) {
+            console.error("Erro ao deletar personagem:", error);
+        }
 
         setOpen(false);
         onDelete();
