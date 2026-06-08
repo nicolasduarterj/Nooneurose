@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { isImageUrl } from "@/lib/utils";
 
 export type CharacterEditFormState = {
 	name: string;
@@ -23,6 +24,9 @@ type CharacterEditFormProps = {
 };
 
 export default function CharacterEditForm({ character, formState, setFormState }: CharacterEditFormProps) {
+	const url = character.imageURL;
+    const srcDaImagem = url && isImageUrl(url) ? url : "/question.svg";
+	
 	return (
 		<section className="flex-1 flex flex-col w-full gap-4 rounded-md border border-neutral/20 bg-secondary p-4 text-neutral/80 sm:p-6">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -57,13 +61,16 @@ export default function CharacterEditForm({ character, formState, setFormState }
 			<div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_1fr] lg:items-start">
 				<div className="flex flex-col gap-2">
 					<div className="lg:flex lg:items-start lg:gap-4">
-						<div className="w-48 h-48 rounded-md bg-tertiary/25 p-3 shrink-0">
+						<div className="w-fit h-fit rounded-md bg-tertiary/25 shrink-0">
 							<Image
-								src={formState.imageURL.trim() || character.imageURL || "/question.svg"}
+								src={srcDaImagem}
 								alt={formState.name || character.name}
-								className="rounded-md object-cover w-full h-full"
+								className="rounded-md object-cover"
 								width={200}
 								height={200}
+								onError={(e) => {
+									(e.target as HTMLImageElement).src = "/question.svg";
+								}}
 							/>
 						</div>
 						
@@ -79,7 +86,7 @@ export default function CharacterEditForm({ character, formState, setFormState }
 								onChange={(event) => setFormState({ ...formState, imageURL: event.target.value })}
 								className="w-fit h-full text-xl font-semibold shadow-none focus-visible:ring-0"
 							/>
-						</div>
+					</div>
 				</div>
 
 				<dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 lg:col-span-full">

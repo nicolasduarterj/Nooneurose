@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Pencil } from "lucide-react";
 import CharacterDeleteDialog from "../delete/CharacterDeleteDialog";
 import CharacterDeriveButton from "../derive/CharacterDeriveButton";
+import { isImageUrl } from "@/lib/utils";
 
 type CharacterViewProps = {
     character: Character;
@@ -16,6 +17,8 @@ export default function CharacterView({ character }: CharacterViewProps) {
     const { user } = useAuth();
     const router = useRouter();
     const isOwner = user?.id === character.ownerId;
+    const url = character.imageURL;
+    const srcDaImagem = url && isImageUrl(url) ? url : "/question.svg";
 
     return (
         <section className="flex flex-col w-full h-full gap-4 rounded-md border border-neutral/20 bg-secondary p-4 text-neutral/80 sm:p-6">
@@ -48,11 +51,14 @@ export default function CharacterView({ character }: CharacterViewProps) {
 
             <div className="w-fit h-fit rounded-md bg-tertiary/25">
                 <Image
-                    src={character.imageURL ?? "/question.svg"}
+                    src={srcDaImagem}
                     alt={character.name}
                     className="rounded-md object-cover"
                     width={200}
                     height={200}
+                    onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/question.svg";
+                    }}
                 />
             </div>
 
