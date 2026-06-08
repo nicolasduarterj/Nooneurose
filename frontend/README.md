@@ -37,4 +37,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Responsáveis pelo front-end (em ordem alfabética)
 -
--
+- Victor Hugo Tomaz Oliveira
