@@ -74,4 +74,9 @@ export default abstract class LocalCharacterService {
     public static async getN(n: number): Promise<Character[]> {
         return this.characterStore.slice(0, n)
     }
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public static async delete(character: Character): Promise<void> {
+        this.characterStore = this.characterStore.filter(char => char.id !== character.id)
+    }
 }

@@ -26,4 +26,13 @@ export default abstract class MainChatService {
             return null
         return res[0]
     }
+
+    public static async getByCharacter(character: Character): Promise<Chat[]> {
+        const res = await db.select().from(chatsTable).where(eq(chatsTable.characterId, character.id))
+        return res
+    }
+
+    public static async delete(chat: Chat): Promise<void> {
+        await db.delete(chatsTable).where(eq(chatsTable.id, chat.id))
+    }
 }

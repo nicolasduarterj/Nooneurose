@@ -1,7 +1,7 @@
 import { messagesTable, responsesTable } from "@src/db/schema";
 import Message from "@src/models/common/Message";
 import db from "@src/db/db";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import DatabaseError, { ThrowsDatabaseError } from "@src/common/types/DatabaseError";
 import Chat from "@src/models/common/Chat";
 
@@ -124,5 +124,18 @@ export default abstract class DatabaseMessageStorageService {
         }
 
         return msgs
+    }
+
+    public static async deleteMessagesAndResponsesByChat(chat: Chat): Promise<void> {
+        await db.transaction(async (tx) => {
+            const messages = await tx.select({ id: messagesTable.id }).from(messagesTable)
+                .where(eq(messagesTable.chatId, chat.id))
+
+            if (messages.length > 0) {
+                const msgIds = messages.map(msg => msg.id)
+                await tx.delete(responsesTable).where(inArray(responsesTable.parentId, msgIds))
+                await tx.delete(messagesTable).where(eq(messagesTable.chatId, chat.id))
+            }
+        })
     }
 }

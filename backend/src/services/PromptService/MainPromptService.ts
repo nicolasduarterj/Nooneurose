@@ -1,6 +1,6 @@
 import db from "@src/db/db"
 import { Prompt, promptsTable } from "@src/db/schema"
-import { desc } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import DatabaseMessageStorageService from "../MessageStorageService/DatabaseMessageStorageService"
 import MainAIService from "../AIService/MainAIService"
 import PromptServiceError, { ThrowsPromptServiceError } from "@src/common/types/PromptServiceError"
@@ -41,7 +41,9 @@ export default abstract class MainPromptService {
 
     @ThrowsPromptServiceError
     public static async getLatestPrompt(character: Character): Promise<Prompt> {
-        const res = await db.select().from(promptsTable).orderBy(desc(promptsTable.timestamp)).limit(1)
+        const res = await db.select().from(promptsTable)
+        .where(eq(promptsTable.character, character.id))
+        .orderBy(desc(promptsTable.timestamp)).limit(1)
         if (res.length === 0)
             return {
                 content: MainPromptService.baseSystemPrompt,
@@ -82,5 +84,9 @@ export default abstract class MainPromptService {
         const newPrompt = await db.insert(promptsTable).values(newPromptInsert).returning()
         void messages.map(msg => services.MessageStorageService.markMessageAsIncluded(msg.id))
         return newPrompt[0]
+    }
+
+    public static async deleteByCharacter(character: Character): Promise<void> {
+        await db.delete(promptsTable).where(eq(promptsTable.character, character.id))
     }
 }

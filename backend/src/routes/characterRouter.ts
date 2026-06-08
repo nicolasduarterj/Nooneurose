@@ -152,4 +152,31 @@ characterRouter.post(APIPaths.Character.ById.derive(), authorize, async function
     res.json(derived)
 })
 
+characterRouter.delete(APIPaths.Character.ById._(), authorize, async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const charId = Number.parseInt(req.params.id)
+    if (Number.isNaN(charId))
+        throw new RouteError(400, 'invalid id')
+
+    const services = getServices()
+    const base = await services.CharacterService.getById(charId)
+
+    if (!base) {
+        res.json({ message: 'deleted' })
+        return
+    }
+
+    if (base.ownerId !== req.user.id)
+        throw new RouteError(403, 'Character is not yours')
+
+    const chats = await services.ChatService.getByCharacter(base)
+    await services.PromptService.deleteByCharacter(base)
+    await Promise.all(chats.map(chat => services.MessageStorageService.deleteMessagesAndResponsesByChat(chat)))
+    await Promise.all(chats.map(chat => services.ChatService.delete(chat)))
+    await services.CharacterService.delete(base)
+    res.json({ message: 'deleted' })
+})
+
 export default characterRouter

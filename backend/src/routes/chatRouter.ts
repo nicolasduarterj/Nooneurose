@@ -67,4 +67,29 @@ chatRouter.get(APIPaths.User.Chats.ChatId.Messages(), authorize, async function(
     res.json(messages)
 })
 
+chatRouter.delete(APIPaths.User.Chats.ChatId._(), authorize, async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
+    const chatId = Number.parseInt(req.params.id)
+
+    if (Number.isNaN(chatId))
+        throw new RouteError(400, 'invalid ChatId')
+
+    const services = getServices()
+    const chat = await services.ChatService.getChatById(chatId)
+
+    if (!chat) {
+        res.json({ message: 'deleted' })
+        return
+    }
+
+    if (chat.ownerId !== req.user.id)
+        throw new RouteError(403, 'chat is not yours')
+
+    await services.MessageStorageService.deleteMessagesAndResponsesByChat(chat)
+    await services.ChatService.delete(chat)
+    res.json({ message: 'deleted' })
+})
+
 export default chatRouter

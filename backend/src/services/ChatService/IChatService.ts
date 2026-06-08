@@ -6,4 +6,6 @@ export default interface IChatService {
     create(owner: User, character: Character): Promise<Chat>
     getChatsByUser(user: User): Promise<Chat[]>
     getChatById(id: number): Promise<Chat | null>
+    getByCharacter(character: Character): Promise<Chat[]>
+    delete(chat: Chat): Promise<void>
 }

@@ -42,4 +42,5 @@ export default abstract class MockPromptService {
         };
     }
 
+    public static async deleteByCharacter(character: Character): Promise<void> {}
 }
