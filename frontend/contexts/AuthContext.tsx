@@ -85,7 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			maxAge: COOKIE_MAX_AGE,
 			path: "/",
 			sameSite: "lax",
-			secure: process.env.NODE_ENV === "production",
+			secure: false,
 		});
 
         const tokenPayload = decodeJwt(data.token);
