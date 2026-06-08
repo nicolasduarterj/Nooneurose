@@ -4,8 +4,9 @@ import { Character } from "@/types/character";
 import Image from 'next/image'
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { GitBranch, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import CharacterDeleteDialog from "../delete/CharacterDeleteDialog";
+import CharacterDeriveButton from "../derive/CharacterDeriveButton";
 
 type CharacterViewProps = {
     character: Character;
@@ -25,13 +26,7 @@ export default function CharacterView({ character }: CharacterViewProps) {
                 </div>
 
                 <div className="flex flex-row flex-wrap gap-4">
-                    <button
-                        type="button"
-                        className="flex items-center gap-2 px-2 py-2 rounded-lg bg-tertiary text-neutral/80 border border-primary/30 hover:bg-primary/20 cursor-pointer"
-                        >
-                        <GitBranch size={12} />
-                        Ramificar
-                    </button>
+                    <CharacterDeriveButton characterId={character.id} buttonType="text" buttonText="Derivar" />
                     {isOwner && (
                         <div className="flex items-center gap-2">
                             <button
