@@ -9,6 +9,7 @@ export default interface ICharacterService {
     update(id: number, data: UpdateCharacterData): Promise<Character | null>
     createDerived(base: Character, newOwner: User): Promise<Character>
     getN(n: number): Promise<Character[]>
+    delete(Character: Character): Promise<void>
 }
 
 export type UpdateCharacterData = {

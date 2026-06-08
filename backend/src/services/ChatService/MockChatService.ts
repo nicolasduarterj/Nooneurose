@@ -38,4 +38,13 @@ export default abstract class MockChatService {
             characterId: 1,
         }
     }
+
+    //eslint-disable-next-line @typescript-eslint/require-await
+    public static async getByCharacter(character: Character): Promise<Chat[]> {
+        return [{ id: 1, ownerId: 1, characterId: 1 }]
+    }
+
+    public static async delete(chat: Chat): Promise<void> {}
+
+
 }

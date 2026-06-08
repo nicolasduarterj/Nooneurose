@@ -72,4 +72,8 @@ export default abstract class MainCharacterService {
         const res = await db.select().from(charactersTable).limit(n)
         return res
     }
+
+    public static async delete(character: Character): Promise<void> {
+        await db.delete(charactersTable).where(eq(charactersTable.id, character.id))
+    }
 }

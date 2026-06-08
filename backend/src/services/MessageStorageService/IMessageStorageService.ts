@@ -8,4 +8,5 @@ export default interface IMessageStorageService {
     getUnusedMessages(chat: Chat): Promise<Message[]>;
     registerResponse(content: string, msgId: number): Promise<Message>
     getMessagesAndResponsesByChat(chat: Chat): Promise<Message[]>
+    deleteMessagesAndResponsesByChat(chat: Chat): Promise<void>
 }

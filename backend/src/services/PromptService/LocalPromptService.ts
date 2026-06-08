@@ -67,4 +67,9 @@ export default abstract class LocalPromptService {
 
         return newPrompt;
     }
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public static async deleteByCharacter(character: Character): Promise<void> {
+        this.promptStore = this.promptStore.filter(prompt => prompt.character !== character.id)
+    }
 }

@@ -52,4 +52,6 @@ export default abstract class MockCharacterService {
     public static async getN(n: number): Promise<Character[]> {
         return [this.mockChar]
     }
+
+    public static async delete(character: Character): Promise<void> {}
 }

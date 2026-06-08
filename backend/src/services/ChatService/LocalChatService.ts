@@ -17,7 +17,7 @@ export default abstract class LocalChatService {
         LocalChatService.chatStore.push(chat)
         return chat
         }
-        
+
         //eslint-disable-next-line @typescript-eslint/require-await
         public static async getChatsByUser(user: User): Promise<Chat[]> {
             return LocalChatService.chatStore.filter(c => c.ownerId === user.id)
@@ -26,5 +26,15 @@ export default abstract class LocalChatService {
         //eslint-disable-next-line @typescript-eslint/require-await
         public static async getChatById(id: number): Promise<Chat | null> {
             return LocalChatService.chatStore.find(c => c.id === id) ?? null
+        }
+
+        // eslint-disable-next-line @typescript-eslint/require-await
+        public static async getByCharacter(character: Character): Promise<Chat[]> {
+            return this.chatStore.filter(candidate => candidate.characterId === character.id)
+        }
+
+        // eslint-disable-next-line @typescript-eslint/require-await
+        public static async delete(chat: Chat): Promise<void> {
+            this.chatStore = this.chatStore.filter(candidate => candidate.id !== chat.id)
         }
 }

@@ -102,4 +102,10 @@ export default abstract class LocalMessageStorage {
         const result = msgs.concat(responses)
         return result
     }
+
+    // eslint-disable-next-line @typescript-eslint/require-await
+    public static async deleteMessagesAndResponsesByChat(chat: Chat): Promise<void> {
+        this.messageStore = this.messageStore.filter(msg => msg.chatId !== chat.id)
+        this.responseStore = this.responseStore.filter(msg => msg.chatId !== chat.id)
+    }
 }

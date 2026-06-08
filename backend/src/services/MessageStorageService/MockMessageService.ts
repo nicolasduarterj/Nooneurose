@@ -101,4 +101,6 @@ export default abstract class MockStorageService {
             }
         ]
     }
+
+    public static async deleteMessagesAndResponsesByChat(chat: Chat): Promise<void> {}
 }
