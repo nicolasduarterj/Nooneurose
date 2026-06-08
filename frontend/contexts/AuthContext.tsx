@@ -76,7 +76,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
 
         if (!res.ok) {
-            throw new Error('Email ou senha incorretos.');
+            const errorResponse = await res.json().catch(() => null);
+            const errorMessage = errorResponse?.error || 'Email ou senha incorretos.';
+            throw new Error(errorMessage);
         }
 
         const data: LoginResponse = await res.json();

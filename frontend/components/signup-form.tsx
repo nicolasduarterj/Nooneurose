@@ -34,23 +34,24 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const validateMinLength = (value: string, min: number, label: string) => {
-    if (value.length < min) return `${label} deve ter no mínimo ${min} caracteres`;
-    return '';
-  };
   const validateEmail = (value: string) => {
     const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     return regex.test(value) ? '' : 'Email inválido';
   };
+  const validatePassword = (value: string) => {
+    if (value.length < 8) return 'A senha deve ter no mínimo 8 caracteres';
+    if (!/[A-Z]/.test(value)) return 'A senha deve conter ao menos uma letra maiúscula';
+    if (!/[0-9]/.test(value)) return 'A senha deve conter ao menos um número';
+    return '';
+  };
   const validatePasswordMatch = (password: string, confirm: string) => {
-    if (password !== confirm) return 'As senhas não coincidem'
+    if (password !== confirm) return 'As senhas não coincidem';
     return '';
   };
 
@@ -58,7 +59,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
     e.preventDefault();
 
     const emailErro = validateEmail(email);
-    const passwordErro = validateMinLength(password, 4, 'A senha');
+    const passwordErro = validatePassword(password);
     const confirmPasswordErro = validatePasswordMatch(password, confirmPassword);
 
     setEmailError(emailErro);
@@ -152,7 +153,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"div">)
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    onBlur={() => setPasswordError(validateMinLength(password, 4, 'A senha'))}
+                    onBlur={() => setPasswordError(validatePassword(password))}
                   />
                   {passwordError && <p className="text-sm text-red-500">{passwordError}</p>}
                 </Field>

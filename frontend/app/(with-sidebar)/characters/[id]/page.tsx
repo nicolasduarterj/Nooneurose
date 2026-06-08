@@ -2,6 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import CharacterView from "@/components/features/characters/view/CharacterView";
+import ChatsList from "@/components/features/chat/list/chats";
 import { Character } from "@/types/character";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
@@ -10,7 +11,7 @@ import ChatCreateButton from "@/components/features/chat/create/ChatCreateButton
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 type CharacterPageParams = {
-    id: number
+    id: string
 };
 
 type CharacterPageProps = {
@@ -21,6 +22,7 @@ export default function CharacterPage({ params }: CharacterPageProps) {
     const [character, setCharacter] = useState<Character>();
     const router = useRouter();
     const { id } = use<CharacterPageParams>(params);
+    const numberId = Number(id);
 
     useEffect(() => {
         const fetchCharacter = async () => {
@@ -46,12 +48,18 @@ export default function CharacterPage({ params }: CharacterPageProps) {
             <div className="simple-mesh-gradient" aria-hidden="true" />
             <div className="flex items-center justify-between px-2">
                 <h1 className="text-2xl font-bold">Personagem</h1>
-                <ChatCreateButton characterId={id} buttonType="text" buttonText="Novo Chat" />
+                <ChatCreateButton characterId={numberId} buttonType="text" buttonText="Novo Chat" />
             </div>
             <Separator className="bg-primary/50" />
 
             <div className="w-full h-fit">
                 {character && <CharacterView character={character} />}
+            </div>
+
+            <Separator className="bg-primary/50" />
+
+            <div className="w-full h-full">
+                <ChatsList characterId={numberId} />
             </div>
         </main>
     );
