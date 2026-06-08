@@ -119,10 +119,16 @@ characterRouter.patch(APIPaths.Character.ById._(), authorize, async function(req
 })
 
 characterRouter.get(APIPaths.Character.ByOwner(), async function(req: Req, res: Res) {
+    if (!req.user)
+        throw new RouteError(500, 'error missing user')
+
     const userId = Number.parseInt(req.params.userId)
 
     if (Number.isNaN(userId))
         throw new RouteError(400, 'id must be a number')
+
+    if (userId !== req.user.id)
+        throw new RouteError(403, 'you can only access your own characters')
 
     const services = getServices()
     const user = await services.UserService.getById(userId)
