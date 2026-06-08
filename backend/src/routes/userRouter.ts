@@ -83,18 +83,10 @@ userRouter.post(APIPaths.User.Login(), loginRateLimit, async function(req: Req, 
     res.json({ token: token })
 })
 
-userRouter.get(APIPaths.User.byId(), async function(req: Req, res: Res) {
+userRouter.get(APIPaths.User.byId(), authorize, async function(req: Req, res: Res) {
     const id = parseInt(req.params.id)
     if (Number.isNaN(id))
         throw new RouteError(400, 'Invalid id')
-
-    const token = req.headers['authorization']?.replace('Bearer ', '')
-    if (!token) throw new RouteError(401, 'missing auth token')
-
-    const payload = jwt.verify(token, EnvVars.JwtSecret) as { id: number }
-
-    if (id !== payload.id)
-        throw new RouteError(403, 'you can only access your own user')
 
     const services = getServices()
     const user = await services.UserService.getById(id)
