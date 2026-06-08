@@ -11,6 +11,7 @@ import authorize from '@src/common/utils/middleware/authorize'
 import { UpdateUserData } from '@src/services/UserService/UserService'
 import User from '@src/models/common/User'
 import loginRateLimit from '@src/common/utils/middleware/rate_limit'
+import { isValidEmail } from '@src/common/utils/validators'
 
 const userRouter = Router()
 
@@ -35,6 +36,9 @@ userRouter.post(APIPaths.User._(), async function(req: Req, res: Res) {
     }
     if (!/[0-9]/.test(password)) {
       throw new RouteError(400, 'Password must contain at least one number')
+    }
+    if (!isValidEmail(req.body.email)) {
+        throw new RouteError(400, 'Invalid email format')
     }
 
     try {
@@ -66,8 +70,7 @@ userRouter.post(APIPaths.User.Login(), loginRateLimit, async function(req: Req, 
     }
 
     const email: string = req.body['email']
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
+    if (!isValidEmail(email)) {
         throw new RouteError(400, 'Invalid email format')
     }
 
@@ -141,10 +144,10 @@ userRouter.get(APIPaths.User.search(), async function(req: Req, res: Res) {
 })
 
 export function sanitizeUser(user: User) {
-    return { 
+    return {
         id: user.id,
         email: user.email,
-        name: user.name 
+        name: user.name
      };
 }
 

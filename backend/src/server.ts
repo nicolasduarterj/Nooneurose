@@ -4,7 +4,6 @@ import helmet from 'helmet';
 import logger from 'jet-logger';
 import morgan from 'morgan';
 
-import Paths from '@src/common/constants/Paths';
 import { RouteError } from '@src/common/utils/route-errors';
 import BaseRouter from '@src/routes/apiRouter';
 
@@ -24,6 +23,7 @@ const app = express();
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', 1)
 
 if (EnvVars.NodeEnv === NodeEnvs.PRODUCTION) {
   app.use(cors({
