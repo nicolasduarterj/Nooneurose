@@ -82,7 +82,7 @@ export default function ChatsList({ characterId }: ChatsListProps) {
   }, [characterId]);
 
   return (
-    <main className="flex h-full w-full flex-col gap-4 p-6 min-h-0 overflow-hidden relative">
+    <div className="flex h-full w-full flex-col gap-4 p-6 min-h-0 overflow-hidden relative">
       <div aria-hidden="true" />
       <div>
         <h1 className="text-2xl font-bold">Chats</h1>
@@ -129,6 +129,6 @@ export default function ChatsList({ characterId }: ChatsListProps) {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }
