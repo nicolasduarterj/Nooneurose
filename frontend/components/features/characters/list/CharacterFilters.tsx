@@ -35,13 +35,13 @@ export default function CharacterFilters({ tab, onTabChange, value, isLoading, o
                 >
                     <ToggleGroupItem
                         value="personagens"
-                        className="text-neutral/50 data-[state=on]:bg-primary/50 data-[state=on]:text-neutral cursor-pointer"
+                        className="text-neutral/50 hover:text-neutral/80 data-[state=on]:bg-primary/50 data-[state=on]:text-neutral cursor-pointer"
                     >
                         Personagens
                     </ToggleGroupItem>
                     <ToggleGroupItem
                         value="criadores"
-                        className="text-neutral/50 data-[state=on]:bg-primary/50 data-[state=on]:text-neutral cursor-pointer"
+                        className="text-neutral/50 hover:text-neutral/80 data-[state=on]:bg-primary/50 data-[state=on]:text-neutral cursor-pointer"
                     >
                         Criadores
                     </ToggleGroupItem>
