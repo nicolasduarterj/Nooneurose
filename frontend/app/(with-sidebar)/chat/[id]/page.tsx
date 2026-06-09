@@ -5,6 +5,7 @@ import ChatForm from "@/components/features/chat/ChatForm";
 import ChatMessageList from "@/components/features/chat/ChatMessageList";
 import { Message } from "@/types/message";
 import { API_BASE, authHeaders, lastChatIdKey } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 type ChatParams = {
     id: string;
@@ -28,6 +29,7 @@ export default function Chat({ params }: PageProps) {
 
     const { id } = use<ChatParams>(params);
     const numberId = Number(id);
+    const router = useRouter();
 
     useEffect(() => {
         const init = async () => {
@@ -41,7 +43,14 @@ export default function Chat({ params }: PageProps) {
                     }
                 );
 
-                if (!res.ok) throw new Error(`Erro ao buscar histórico: ${res.status}`);
+                if (!res.ok){
+                    if (res.status === 404){
+                        router.push("/chat");
+                        return;
+                    }
+
+                    throw new Error(`Erro ao buscar histórico: ${res.status}`);
+                }
 
                 const history: Array<Message> = await res.json();
                 setMessages(history);

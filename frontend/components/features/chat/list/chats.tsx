@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { API_BASE, authHeaders } from "@/lib/api";
+import ChatDeleteDialog from "../delete/ChatDeleteDialog";
 
 interface Chat {
   id: number;
@@ -20,6 +21,10 @@ export default function ChatsList({ characterId }: ChatsListProps) {
   const [characterNames, setCharacterNames] = useState<Record<number, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const onDeleteChat = (chatId: number) => {
+    setChats((prevChats) => prevChats.filter((chat) => chat.id !== chatId));
+  }
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -82,7 +87,7 @@ export default function ChatsList({ characterId }: ChatsListProps) {
   }, [characterId]);
 
   return (
-    <main className="flex h-full w-full flex-col gap-4 p-6 min-h-0 overflow-hidden relative">
+    <div className="flex h-full w-full flex-col gap-4 p-6 min-h-0 overflow-hidden relative">
       <div aria-hidden="true" />
       <div>
         <h1 className="text-2xl font-bold">Chats</h1>
@@ -101,34 +106,36 @@ export default function ChatsList({ characterId }: ChatsListProps) {
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="grid gap-3 overflow-y-auto pr-2 max-h-full">
             {chats.map((chat) => (
-              <Link
-                key={chat.id}
-                href={`/chat/${chat.id}`}
-                className="rounded-2xl border border-neutral/20 bg-muted/10 p-4 transition hover:border-primary/40 hover:bg-primary/5"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm text-neutral/60">
-                      Chat {chat.id} | {characterNames[chat.characterId] ?? `Personagem ${chat.characterId}`}
-                    </p>
+              <div key={chat.id} className="flex flex-row justify-between align-center rounded-2xl border border-neutral/20 bg-muted/10 p-4 transition hover:border-primary/40 hover:bg-primary/5">
+                <Link
+                  className="w-full items-center"
+                  href={`/chat/${chat.id}`}
+                >
+                  <div className="flex w-full h-full items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm text-neutral/60">
+                        Chat {chat.id} | {characterNames[chat.characterId] ?? `Personagem ${chat.characterId}`}
+                      </p>
+                    </div>
+                    {chat.updatedAt ? (
+                      <span className="text-xs text-neutral/50">
+                        {new Date(chat.updatedAt).toLocaleDateString("pt-BR", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    ) : null}
                   </div>
-                  {chat.updatedAt ? (
-                    <span className="text-xs text-neutral/50">
-                      {new Date(chat.updatedAt).toLocaleDateString("pt-BR", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  ) : null}
+                </Link>
+                <ChatDeleteDialog chatId={chat.id} onDelete={() => onDeleteChat(chat.id)} />
                 </div>
-              </Link>
             ))}
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

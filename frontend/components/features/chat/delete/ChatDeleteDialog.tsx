@@ -1,31 +1,29 @@
-"use client"
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useState } from "react";
-import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { API_BASE, authHeaders } from "@/lib/api";
+import { useState } from "react";
+import { Trash2 } from "lucide-react";
 
-type CharacterDeleteProps = {
-    characterId: number;
+type ChatDeleteProps = {
+    chatId: number;
     onDelete: () => void;
 };
 
-export default function CharacterDeleteDialog({ characterId, onDelete }: CharacterDeleteProps) {
+export default function ChatDeleteDialog({ chatId, onDelete }: ChatDeleteProps) {
     const [open, setOpen] = useState(false);
-    
+
     const handleDelete = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/character/byId/${characterId}`, {
+            const res = await fetch(`${API_BASE}/api/user/chats/${chatId}`, {
                 method: "DELETE",
                 headers: authHeaders(),
             });
 
             if (!res.ok)
-                throw new Error(`Erro ao deletar personagem: ${res.status}`);
+                throw new Error(`Erro ao deletar chat: ${res.status}`);
         }
         catch (error) {
-            console.error("Erro ao deletar personagem:", error);
+            console.error("Erro ao deletar chat:", error);
         }
 
         setOpen(false);
@@ -43,8 +41,8 @@ export default function CharacterDeleteDialog({ characterId, onDelete }: Charact
             </DialogTrigger>
             <DialogContent className="bg-secondary border border-neutral/20 text-neutral/80">
                 <DialogHeader className="gap-2">
-                    <DialogTitle>Excluir personagem</DialogTitle>
-                    <DialogDescription>Essa ação remove permanentemente o personagem. Deseja continuar?</DialogDescription>
+                    <DialogTitle>Excluir chat</DialogTitle>
+                    <DialogDescription>Essa ação remove permanentemente o chat. Deseja continuar?</DialogDescription>
                 </DialogHeader>
                 <Button 
                     type="button"
