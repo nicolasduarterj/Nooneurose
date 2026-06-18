@@ -28,7 +28,8 @@ export const usersTable = pgTable('users', {
     id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
     name: varchar('name').notNull(),
     email: varchar('email').notNull().unique(),
-    password: varchar('password').notNull()
+    password: varchar('password').notNull(),
+    isAdmin: boolean('is_admin').notNull().default(false)
 })
 
 export const charactersTable = pgTable('characters', {
@@ -45,6 +46,12 @@ export const chatsTable = pgTable('chats', {
     id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
     ownerId: integer('owner').references(() => usersTable.id).notNull(),
     characterId: integer('character').references(() => charactersTable.id).notNull()
+})
+
+export const reportsTable = pgTable('reports', {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    character: integer('character').notNull().references(() => charactersTable.id),
+    motive: text('motive').notNull()
 })
 
 export type Prompt = typeof promptsTable.$inferSelect

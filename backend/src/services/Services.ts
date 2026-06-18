@@ -22,6 +22,10 @@ import MockChatService from "./ChatService/MockChatService";
 import MainChatService from "./ChatService/MainChatService";
 import LocalCharacterService from "./CharacterService/LocalCharacterService";
 import MockCharacterService from "./CharacterService/MockCharacterStore";
+import IReportService from "./ReportService/IReportService";
+import LocalReportService from "./ReportService/LocalReportService";
+import MockReportService from "./ReportService/MockReportService";
+import MainReportService from "./ReportService/MainReportService";
 
 
 export interface Services {
@@ -31,6 +35,7 @@ export interface Services {
     UserService: IUserService
     CharacterService: ICharacterService
     ChatService: IChatService
+    ReportService: IReportService
 }
 
 export function getServices(): Services {
@@ -42,16 +47,18 @@ export function getServices(): Services {
                 PromptService: LocalPromptService,
                 UserService: LocalUserService,
                 CharacterService: LocalCharacterService,
-                ChatService: LocalChatService
+                ChatService: LocalChatService,
+                ReportService: LocalReportService
             }
         case "test":
-            return { 
+            return {
                 AIService: MockAIService,
                 MessageStorageService: MockStorageService,
                 PromptService: MockPromptService,
                 UserService: MockUserService,
                 CharacterService: MockCharacterService,
-                ChatService: MockChatService
+                ChatService: MockChatService,
+                ReportService: MockReportService
             }
         case "production":
             return {
@@ -60,7 +67,8 @@ export function getServices(): Services {
                 PromptService: MainPromptService,
                 UserService: MainUserService,
                 CharacterService: MainCharacterService,
-                ChatService: MainChatService
+                ChatService: MainChatService,
+                ReportService: MainReportService
             }
     }
 }

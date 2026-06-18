@@ -29,6 +29,9 @@ const Paths = {
         },
         Search: '/search/:query',
         ByOwner: '/byUser/:userId'
+    },
+    Report: {
+        _: '/report'
     }
 } as const;
 

@@ -20,7 +20,7 @@ POST:
         id: number,
         name: string,
         email: string,
-        password: string //HASH
+        isAdmin: boolean
     }
 
 PATCH:
@@ -275,3 +275,29 @@ GET:
     }
 
     Erros: 400 (parâmetros faltando), 500 (problema com o provedor de IA)
+
+### /api/report
+
+    POST:
+    Cria uma denúncia
+    Content-Type: application/json
+
+    Estrutura do body {
+        characterId: number // id do personagem denunciado
+        motive: string
+    }
+
+    Estrutura da resposta {
+        id: number,
+        character: number,
+        motive: string
+    }
+
+    GET
+    Retorna todas as denúncias. Precisa ser admin.
+
+    Estrutura da resposta {
+        id: number,
+        character: number,
+        motive: string
+    }[]

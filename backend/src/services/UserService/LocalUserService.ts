@@ -5,7 +5,18 @@ import { UpdateUserData } from "./UserService"
 export default abstract class LocalUserService {
 
     private static userRepo = new Set<User>()
-    private static counter = 0
+
+    static {
+        this.userRepo.add({
+            id: 1,
+            name: 'ADM',
+            email: 'admin@teste.com',
+            password: 'ABc123@adm',
+            isAdmin: true
+        })
+    }
+
+    private static counter = 1
 
     // eslint-disable-next-line
     public static async create(email: string, password: string, name: string): Promise<User> {
@@ -19,7 +30,8 @@ export default abstract class LocalUserService {
             id: ++LocalUserService.counter,
             name,
             email,
-            password
+            password,
+            isAdmin: false
         }
 
         this.userRepo.add(user)
