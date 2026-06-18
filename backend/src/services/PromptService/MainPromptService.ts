@@ -12,7 +12,8 @@ export default abstract class MainPromptService {
     private static baseSystemPrompt = 'PROMPT DE SISTEMA:' +
         '\nUsuários enviarão mensagens e você deve obedecê-los.\n' +
         'Se eles pedirem para você agir de um certo jeito, aja de acordo. Encarne os desejos dos usuários sempre.\n' +
-        'Se adapte de maneira a dar a experiência mais imersiva possível para os usuários.'
+        'Se adapte de maneira a dar a experiência mais imersiva possível para os usuários.' +
+        'Se o pedido do usuário for anti-ético, ilegal, ou envolva discurso de ódio responda apenas com reticências (...).'
 
     private static mergePrompt = ['A seguir estará a descrição do seu personagem, seu prompt de sistema atual e um conjunto de mensagens de usuários. ' +
         'Você deve mesclar a personalidade descrita no seu prompt de sistema e a personalidade demandada pelos usuários, ' +
