@@ -48,6 +48,12 @@ export const chatsTable = pgTable('chats', {
     characterId: integer('character').references(() => charactersTable.id).notNull()
 })
 
+export const reportsTable = pgTable('reports', {
+    id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+    character: integer('character').notNull().references(() => charactersTable.id),
+    motive: text('motive').notNull()
+})
+
 export type Prompt = typeof promptsTable.$inferSelect
 export type Response = typeof responsesTable.$inferSelect
 export type Message = typeof messagesTable.$inferInsert
