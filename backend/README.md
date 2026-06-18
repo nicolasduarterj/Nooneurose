@@ -20,7 +20,7 @@ POST:
         id: number,
         name: string,
         email: string,
-        password: string //HASH
+        isAdmin: boolean
     }
 
 PATCH:

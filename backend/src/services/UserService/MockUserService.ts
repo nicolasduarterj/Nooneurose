@@ -7,7 +7,8 @@ export default abstract class MockUserService {
         id: 1,
         name: 'Teste',
         password: 'awidmodnawodnaodnawoi',
-        email: 'testeman@naoexiste.org'
+        email: 'testeman@naoexiste.org',
+        isAdmin: false
     }
 
     // eslint-disable-next-line
