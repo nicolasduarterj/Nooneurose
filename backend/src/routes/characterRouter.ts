@@ -168,7 +168,7 @@ characterRouter.delete(APIPaths.Character.ById._(), authorize, async function(re
         return
     }
 
-    if (base.ownerId !== req.user.id)
+    if (base.ownerId !== req.user.id && !req.user.isAdmin)
         throw new RouteError(403, 'Character is not yours')
 
     const chats = await services.ChatService.getByCharacter(base)
