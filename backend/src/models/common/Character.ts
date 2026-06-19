@@ -6,4 +6,5 @@ export default interface Character {
     isPrivatelyChangeable: boolean
     ownerId: number
     imageURL: string | null
+    permissionFile: string | null
 }
