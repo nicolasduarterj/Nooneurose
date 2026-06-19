@@ -7,7 +7,7 @@ export default abstract class LocalCharacterService {
     private static nextId = 0
 
     //eslint-disable-next-line
-    public static async create(name: string, description: string, owner: User): Promise<Character> {
+    public static async create(name: string, description: string, owner: User, permissionFile?: string): Promise<Character> {
         const newChar: Character = {
             id: ++LocalCharacterService.nextId,
             name,
@@ -15,7 +15,8 @@ export default abstract class LocalCharacterService {
             ownerId: owner.id,
             isGloballyChangeable: false,
             isPrivatelyChangeable: false,
-            imageURL: null
+            imageURL: null,
+            permissionFile: permissionFile ?? null
         }
 
         this.characterStore.push(newChar)

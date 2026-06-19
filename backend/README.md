@@ -83,11 +83,12 @@ Gerenciamento de personagens
 ```
 POST:
     Cria um personagem
-    Content-Type: application/json
+    Content-Type: application/form-data
 
     Estrutura do body: {
         name: string,
         description: string
+        permissionFile?: File
     }
 
     Estrutura da resposta: {
@@ -98,6 +99,7 @@ POST:
         isPrivatelyChangeable: boolean
         ownerId: number
         imageURL: string | null
+        permissionFile: string | null
     }
 
 GET:
@@ -110,6 +112,7 @@ GET:
         isPrivatelyChangeable: boolean
         ownerId: number
         imageURL: string | null
+        permissionFile: string | null
     }[]
 ```
 
@@ -125,6 +128,7 @@ GET:
         isPrivatelyChangeable: boolean
         ownerId: number
         imageURL: string | null
+        permissionFile: string | null
     }
 
 PATCH:
@@ -257,7 +261,7 @@ GET:
         ownerId: number
         imageURL: string | null
     }
-```
+
 ### /api/ai/send
 
     Envia uma mensagem para a IA
@@ -301,3 +305,14 @@ GET:
         character: number,
         motive: string
     }[]
+
+### /api/file/:filename
+
+    GET
+    Retorna um arquivo. Precisa ser admin.
+
+    Estrutura da resposta: 200: {
+        Content-Type: application/pdf
+        Content-Disposition: attachment
+    },
+    403, 404: Erro

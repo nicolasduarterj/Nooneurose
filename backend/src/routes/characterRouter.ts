@@ -5,18 +5,35 @@ import { RouteError } from "@src/common/utils/route-errors";
 import { getServices } from "@src/services/Services";
 import { APIPaths } from "@src/common/constants/Paths";
 import { UpdateCharacterData } from "@src/services/CharacterService/ICharacterService";
+import multer from 'multer'
+import { randomUUID } from "node:crypto";
+import { BlobPart } from "node:buffer";
 
 const characterRouter = Router()
+const upload = multer({ storage: multer.memoryStorage() })
 
-characterRouter.post(APIPaths.Character._(), authorize, async function(req: Req, res: Res) {
+characterRouter.post(APIPaths.Character._(), [authorize, upload.single('permissionFile')], 
+    async function(req: Req, res: Res) {
     if (!req.body['name'] || !req.body['description'] || !req.user) 
         throw new RouteError(400, 'missing parameters')
 
     const services = getServices()
+    const filename = req.file? `${randomUUID()}-${req.file.originalname}` : ''
+
+    if (filename !== '' && req.file) {
+        if (!filename.endsWith('.pdf'))
+            throw new RouteError(400, 'permissionFile must be a PDF.')
+
+        const buffer = req.file.buffer
+        const file = new File([buffer as BlobPart], filename)
+        await services.FileService.store(file)
+    }
+
     const character = await services.CharacterService.create(
         req.body['name'],
         req.body['description'],
-        req.user
+        req.user,
+        req.file? filename : undefined
     )
 
     res.json(character)

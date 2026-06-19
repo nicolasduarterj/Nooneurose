@@ -10,7 +10,8 @@ export default abstract class MockCharacterService {
         description: 'Teste',
         isGloballyChangeable: true,
         isPrivatelyChangeable: true,
-        imageURL: null
+        imageURL: null,
+        permissionFile: null
     }
 
     //eslint-disable-next-line

@@ -23,7 +23,8 @@ const EnvVars = jetEnv({
   OpenRouterModel: str,
   DatabaseUrl: str,
   JwtSecret: str,
-  FrontendUrl: str
+  FrontendUrl: str,
+  StorageDir: str
 });
 
 /******************************************************************************

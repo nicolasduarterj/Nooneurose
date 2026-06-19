@@ -32,6 +32,10 @@ const Paths = {
     },
     Report: {
         _: '/report'
+    },
+    File: {
+        _: '/file',
+        ByFilename: '/:filename'
     }
 } as const;
 

@@ -7,13 +7,14 @@ import { UpdateCharacterData } from "./ICharacterService"
 import { getServices } from "../Services"
 
 export default abstract class MainCharacterService {
-    public static async create(name: string, description: string, owner: User): Promise<Character> {
+    public static async create(name: string, description: string, owner: User, permissionFile?: string): Promise<Character> {
         const res = await db.insert(charactersTable).values({
             name: name,
             description: description,
             ownerId: owner.id,
             isGloballyChangeable: true,
             isPrivatelyChangeable: true,
+            permissionFile
         }).returning()
 
         return res[0]

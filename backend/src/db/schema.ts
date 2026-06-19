@@ -39,7 +39,8 @@ export const charactersTable = pgTable('characters', {
     isGloballyChangeable: boolean('is_globally_changeable').notNull(),
     isPrivatelyChangeable: boolean('is_privately_changeable').notNull(),
     ownerId: integer('owner').references(() => usersTable.id).notNull(),
-    imageURL: varchar('image_url')
+    imageURL: varchar('image_url'),
+    permissionFile: text('permission_file')
 })
 
 export const chatsTable = pgTable('chats', {
