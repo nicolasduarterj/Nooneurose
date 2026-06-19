@@ -21,6 +21,9 @@ characterRouter.post(APIPaths.Character._(), [authorize, upload.single('permissi
     const filename = req.file? `${randomUUID()}-${req.file.originalname}` : ''
 
     if (filename !== '' && req.file) {
+        if (!filename.endsWith('.pdf'))
+            throw new RouteError(400, 'permissionFile must be a PDF.')
+
         const buffer = req.file.buffer
         const file = new File([buffer as BlobPart], filename)
         await services.FileService.store(file)

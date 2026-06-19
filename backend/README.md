@@ -261,7 +261,7 @@ GET:
         ownerId: number
         imageURL: string | null
     }
-```
+
 ### /api/ai/send
 
     Envia uma mensagem para a IA
@@ -305,3 +305,14 @@ GET:
         character: number,
         motive: string
     }[]
+
+### /api/file/:filename
+
+    GET
+    Retorna um arquivo. Precisa ser admin.
+
+    Estrutura da resposta: 200: {
+        Content-Type: application/pdf
+        Content-Disposition: attachment
+    },
+    403, 404: Erro

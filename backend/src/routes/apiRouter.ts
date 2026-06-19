@@ -5,6 +5,7 @@ import userRouter from './userRouter';
 import characterRouter from './characterRouter';
 import chatRouter from './chatRouter';
 import reportRouter from './reportRouter';
+import fileRouter from './fileRouter';
 
 /******************************************************************************
                                 Setup
@@ -17,6 +18,7 @@ apiRouter.use(userRouter)
 apiRouter.use(characterRouter)
 apiRouter.use(chatRouter)
 apiRouter.use(reportRouter)
+apiRouter.use(fileRouter)
 
 /******************************************************************************
                                 Export
