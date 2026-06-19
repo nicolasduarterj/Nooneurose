@@ -26,6 +26,8 @@ import IReportService from "./ReportService/IReportService";
 import LocalReportService from "./ReportService/LocalReportService";
 import MockReportService from "./ReportService/MockReportService";
 import MainReportService from "./ReportService/MainReportService";
+import IFileService from "./FileService/IFileService";
+import LocalFileService from "./FileService/LocalFileService";
 
 
 export interface Services {
@@ -36,6 +38,7 @@ export interface Services {
     CharacterService: ICharacterService
     ChatService: IChatService
     ReportService: IReportService
+    FileService: IFileService
 }
 
 export function getServices(): Services {
@@ -48,7 +51,8 @@ export function getServices(): Services {
                 UserService: LocalUserService,
                 CharacterService: LocalCharacterService,
                 ChatService: LocalChatService,
-                ReportService: LocalReportService
+                ReportService: LocalReportService,
+                FileService: LocalFileService
             }
         case "test":
             return {
@@ -58,7 +62,8 @@ export function getServices(): Services {
                 UserService: MockUserService,
                 CharacterService: MockCharacterService,
                 ChatService: MockChatService,
-                ReportService: MockReportService
+                ReportService: MockReportService,
+                FileService: LocalFileService
             }
         case "production":
             return {
@@ -68,7 +73,8 @@ export function getServices(): Services {
                 UserService: MainUserService,
                 CharacterService: MainCharacterService,
                 ChatService: MainChatService,
-                ReportService: MainReportService
+                ReportService: MainReportService,
+                FileService: LocalFileService
             }
     }
 }
