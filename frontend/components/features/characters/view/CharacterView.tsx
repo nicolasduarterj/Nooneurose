@@ -11,6 +11,7 @@ import { isImageUrl } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { API_BASE, authHeaders } from "@/lib/api";
 import { User } from "@/types/user";
+import CharacterReportDialog from "../report/CharacterReportDialog";
 
 type CharacterViewProps = {
     character: Character;
@@ -76,10 +77,20 @@ export default function CharacterView({ character }: CharacterViewProps) {
                     <h2 className="text-xl font-semibold">{character.name}</h2>
                     <p className="text-sm text-neutral/70">{character.description}</p>
                 </div>
-
-                <div className="flex flex-row flex-wrap gap-4">
-                    <CharacterDeriveButton characterId={character.id} buttonType="text" buttonText="Derivar" />
-                    {isOwner && (
+                {!isOwner && (
+                    <div className="flex flex-row flex-wrap gap-4">
+                        <CharacterDeriveButton
+                            characterId={character.id}
+                            buttonType="text"
+                            buttonText="Derivar"
+                        />
+                        <CharacterReportDialog
+                            characterId={character.id}
+                        />
+                    </div>
+                )}
+                {isOwner && (
+                    <div className="flex flex-row flex-wrap gap-4">
                         <div className="flex items-center gap-2">
                             <button
                                 type="button"
@@ -90,12 +101,12 @@ export default function CharacterView({ character }: CharacterViewProps) {
                                 Editar
                             </button>
                             <CharacterDeleteDialog
-                            characterId={character.id}
-                            onDelete={redirectToCharacters}
-                        />
+                                characterId={character.id}
+                                onDelete={redirectToCharacters}
+                            />
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             <div className="w-fit h-fit rounded-md bg-tertiary/25">

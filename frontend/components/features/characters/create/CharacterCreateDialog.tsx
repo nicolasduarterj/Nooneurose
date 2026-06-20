@@ -16,19 +16,28 @@ export default function CharacterCreateDialog() {
     const [formState, setFormState] = useState<CharacterFormState>({
         name: "",
         description: "",
+        permissionFile: null,
     });
 
     const handleSubmit = async () => {
         try {
-            const requestBody = {
-                name: formState.name,
-                description: formState.description
-            };
+            const formData = new FormData();
+
+            formData.append("name", formState.name);
+            formData.append("description", formState.description);
+
+            if (formState.permissionFile) {
+                formData.append("permissionFile", formState.permissionFile);
+            }
+
+            const headers = authHeaders();
+
+            const { "Content-Type": _, ...headersWithoutContentType } = headers;
 
             const res = await fetch(`${API_BASE}/api/character`, {
                 method: "POST",
-                headers: authHeaders(),
-                body: JSON.stringify(requestBody)
+                headers: headersWithoutContentType,
+                body: formData,
             });
 
             if (!res.ok)

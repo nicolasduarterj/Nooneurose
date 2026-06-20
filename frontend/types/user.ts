@@ -1,6 +1,7 @@
 export type LoginResponse = {
   token: string;
   name: string;
+  isAdmin: boolean;
 };
 
 export type CreateUserResponse = {
@@ -8,6 +9,7 @@ export type CreateUserResponse = {
   name: string;
   email: string;
   password: string;
+  isAdmin: boolean;
 };
 
 export type DoLoginRequest = {
@@ -18,12 +20,14 @@ export type DoLoginRequest = {
 export type LoggedUser = {
   id: number;
   name: string;
+  isAdmin: boolean;
 };
 
 export type User = {
   id: number;
   name: string;
   email: string;
+  isAdmin: boolean;
 };
 
 export interface Creator {
