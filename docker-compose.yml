@@ -3,6 +3,8 @@ services:
   backend:
     build:
       context: ./backend
+    volumes:
+      - ./user_files:/files
   
   frontend:
     build:
