@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Phase } from '@/types/phase'
 import { useAuth } from '@/contexts/AuthContext';
+import { LoggedUser } from "@/types/user";
 
 export default function Home() {
   const router = useRouter();
@@ -19,18 +20,18 @@ export default function Home() {
   const [loginError, setLoginError] = useState('');
 
   const handleLoginClick = async () => {
-
-    const onLoginSuccess = () => {
-      setTimeout(() => setPhase('leaving'), 800);
-      setTimeout(() => router.push('/chat'), 1250);
-    }
-
     if (phase !== 'idle') return;
 
-    try{
+    const onLoginSuccess = (user: LoggedUser) => {
+      setTimeout(() => setPhase('leaving'), 800);
+      setTimeout(() => {
+        router.push(user.isAdmin ? '/report' : '/home');
+      }, 1250);
+    };
+
+    try {
       await login({ email, password }, onLoginSuccess);
-    }
-    catch(error){
+    } catch (error) {
       setLoginError(error instanceof Error ? error.message : 'Falha ao realizar login');
     }
   };

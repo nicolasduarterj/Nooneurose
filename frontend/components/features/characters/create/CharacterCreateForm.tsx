@@ -7,6 +7,7 @@ import Form from "next/form";
 export type CharacterFormState = {
     name: string;
     description: string;
+    permissionFile?: File | null;
 }
 
 type CharacterCreateFormProps = {
@@ -36,6 +37,26 @@ export default function CharacterCreateForm({ formState, onChange, onSubmitMessa
                         value={formState.description}
                         onChange={(event) => onChange({ ...formState, description: event.target.value })}>
                     </Textarea>
+                </Field>
+                <Field>
+                    <FieldLabel>
+                        OBS: Se o seu personagem for baseado em uma pessoal real você precisa anexar uma autorização da pessoa (PDF)
+                    </FieldLabel>
+
+                    <Input
+                        className="cursor-pointer"
+                        type="file"
+                        accept=".pdf"
+                        onChange={(event) =>
+                            onChange({
+                                ...formState,
+                                permissionFile: event.target.files?.[0] ?? null,
+                            })
+                        }
+                    />
+                    {formState.permissionFile && (
+                        <p>{formState.permissionFile.name}</p>
+                    )}
                 </Field>
                 <Field>
                     <Button
