@@ -142,6 +142,14 @@ export default function CharacterView({ character }: CharacterViewProps) {
                     <dt className="text-neutral/60">Moldável pelo criador</dt>
                     <dd className="font-medium">{character.isPrivatelyChangeable ? "Sim" : "Não"}</dd>
                 </div>
+                <div className="rounded-md bg-tertiary/25 p-3">
+                    <h3 className="text-sm text-neutral/60">O criador do personagem alega que</h3>
+                    {character.permissionFile ? (
+                        <dt className="font-medium">Possui autorização da pessoa na qual este personagem é baseado</dt>
+                    ) : (
+                        <dt className="font-medium">Este personagem é fictício e não tem correlação com pessoas reais</dt>
+                    )}
+                </div>
             </dl>
         </section>
     );
