@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { API_BASE, authHeaders } from "@/lib/api";
 import Image from "next/image";
 import { isImageUrl } from "@/lib/utils";
+import { Character } from "@/types/character"
 
 interface Report {
   id: number;
@@ -13,16 +14,7 @@ interface Report {
   motive: string;
 }
 
-interface Character {
-  id: number;
-  name: string;
-  description: string;
-  isGloballyChangeable: boolean;
-  isPrivatelyChangeable: boolean;
-  ownerId: number;
-  imageURL: string | null;
-  permissionFile: string | null;
-}
+
 
 export default function ReportDetail() {
   const params = useParams();

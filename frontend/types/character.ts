@@ -5,5 +5,6 @@ export type Character = {
     isGloballyChangeable: boolean,
     isPrivatelyChangeable: boolean,
     ownerId: number,
-    imageURL: string | null
+    imageURL: string | null,
+    permissionFile: string | null;
 }
